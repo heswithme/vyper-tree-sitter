@@ -1,0 +1,68 @@
+=========================
+Wrapped grouped expressions
+=========================
+
+@internal
+def demo():
+    self.inflation_params = (
+        (extcall CRV20(CRV).future_epoch_time_write() << 216)
+        + staticcall CRV20(CRV).rate()
+    )
+
+---
+
+(source_file
+  (function_definition
+    (decorator
+      (identifier))
+    (function_signature
+      (identifier))
+    (block
+      (assignment
+        (atom_expression
+          (attribute
+            (atom_expression
+              (identifier))
+            (identifier)))
+        (atom_expression
+          (atom
+            (parenthesized_expression
+              (soft_line_break)
+              (wrapped_binary_expression
+                (atom_expression
+                  (atom
+                    (parenthesized_expression
+                      (binary_expression
+                        (external_call
+                          (atom_expression
+                            (call
+                              (atom_expression
+                                (attribute
+                                  (atom_expression
+                                    (call
+                                      (atom_expression
+                                        (identifier))
+                                      (argument_list
+                                        (argument
+                                          (atom_expression
+                                            (identifier))))))
+                                  (identifier))))))
+                        (atom_expression
+                          (atom
+                            (integer)))))))
+                (soft_line_break)
+                (external_call
+                  (atom_expression
+                    (call
+                      (atom_expression
+                        (attribute
+                          (atom_expression
+                            (call
+                              (atom_expression
+                                (identifier))
+                              (argument_list
+                                (argument
+                                  (atom_expression
+                                    (identifier))))))
+                          (identifier)))))))
+              (soft_line_break))))))))

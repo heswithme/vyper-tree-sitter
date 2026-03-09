@@ -1,0 +1,63 @@
+=========================
+Bytes convert
+=========================
+
+@external
+def newOptions() -> Bytes[MAX_OPTIONS_TOTAL_SIZE]:
+    """
+    @notice Creates a new options container with type 3.
+    @return options The newly created options container.
+    """
+    options: Bytes[MAX_OPTIONS_TOTAL_SIZE] = concat(convert(TYPE_3, bytes2), b"")
+    return options
+
+---
+
+(source_file
+  (function_definition
+    (decorator
+      name: (identifier))
+    (function_signature
+      name: (identifier)
+      return_type: (subscripted_type
+        (identifier)
+        (atom_expression
+          (identifier))))
+    (block
+      (docstring_statement
+        (docstring
+          (docstring_newline)
+          (docstring_chunk_double)
+          (docstring_newline)
+          (docstring_chunk_double)
+          (docstring_newline)))
+      (state_variable_declaration
+        name: (identifier)
+        type: (subscripted_type
+          (identifier)
+          (atom_expression
+            (identifier)))
+        value: (atom_expression
+          (call
+            function: (atom_expression
+              (identifier))
+            (argument_list
+              (argument
+                (atom_expression
+                  (call
+                    function: (atom_expression
+                      (identifier))
+                    (argument_list
+                      (argument
+                        (atom_expression
+                          (identifier)))
+                      (argument
+                        (atom_expression
+                          (identifier)))))))
+              (argument
+                (atom_expression
+                  (atom
+                    (string))))))))
+      (return_statement
+        (atom_expression
+          (identifier))))))

@@ -1,0 +1,135 @@
+=========================
+Expressions and builtins
+=========================
+
+from foo import (Bar, Baz as Qux,)
+from . import *
+
+@view
+@external
+def f(xs: DynArray[address, 5], a: address, data: Bytes[64]) -> bool:
+    xs2: DynArray[uint256, 3] = [1, 2, 3]
+    tpl: (uint256, address) = (1, a)
+    stuff: HashMap[address, uint256]
+    val: uint256 = empty(uint256)
+    decoded: uint256 = abi_decode(data, uint256)
+    return a not in xs or a in xs
+
+---
+
+(source_file
+  (from_import_statement
+    (relative_import_path
+      (dotted_name
+        (identifier)))
+    (parenthesized_import_list
+      (import_item
+        (dotted_name
+          (identifier)))
+      (import_item
+        (dotted_name
+          (identifier))
+        (identifier))))
+  (from_import_statement
+    (relative_import_path))
+  (function_definition
+    (decorator
+      name: (identifier))
+    (decorator
+      name: (identifier))
+    (function_signature
+      name: (identifier)
+      (parameter_list
+        (parameter
+          name: (identifier)
+          type: (subscripted_type
+            (identifier)
+            (atom_expression
+              (identifier))
+            (atom_expression
+              (atom
+                (integer)))))
+        (parameter
+          name: (identifier)
+          type: (identifier))
+        (parameter
+          name: (identifier)
+          type: (subscripted_type
+            (identifier)
+            (atom_expression
+              (atom
+                (integer))))))
+      return_type: (identifier))
+    (block
+      (state_variable_declaration
+        name: (identifier)
+        type: (subscripted_type
+          (identifier)
+          (atom_expression
+            (identifier))
+          (atom_expression
+            (atom
+              (integer))))
+        value: (atom_expression
+          (atom
+            (list
+              (atom_expression
+                (atom
+                  (integer)))
+              (atom_expression
+                (atom
+                  (integer)))
+              (atom_expression
+                (atom
+                  (integer)))))))
+      (state_variable_declaration
+        name: (identifier)
+        type: (tuple_type
+          (identifier)
+          (identifier))
+        value: (atom_expression
+          (atom
+            (tuple
+              (atom_expression
+                (atom
+                  (integer)))
+              (atom_expression
+                (identifier))))))
+      (state_variable_declaration
+        name: (identifier)
+        type: (subscripted_type
+          (identifier)
+          (atom_expression
+            (identifier))
+          (identifier)))
+      (state_variable_declaration
+        name: (identifier)
+        type: (identifier)
+        value: (atom_expression
+          (atom
+            (special_builtin
+              (empty_builtin
+                (identifier))))))
+      (state_variable_declaration
+        name: (identifier)
+        type: (identifier)
+        value: (atom_expression
+          (atom
+            (special_builtin
+              (abi_decode_builtin
+                (argument
+                  (atom_expression
+                    (identifier)))
+                (identifier))))))
+      (return_statement
+        (binary_expression
+          left: (binary_expression
+            left: (atom_expression
+              (identifier))
+            right: (atom_expression
+              (identifier)))
+          right: (binary_expression
+            left: (atom_expression
+              (identifier))
+            right: (atom_expression
+              (identifier))))))))

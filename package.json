@@ -1,0 +1,29 @@
+{
+  "name": "tree-sitter-vyper",
+  "version": "0.0.1",
+  "description": "Tree-sitter grammar for Vyper",
+  "license": "MIT",
+  "author": {
+    "name": "heswithme"
+  },
+  "repository": "https://github.com/heswithme/tree-sitter-vyper",
+  "main": "bindings/node",
+  "keywords": [
+    "tree-sitter",
+    "vyper",
+    "parser"
+  ],
+  "files": [
+    "grammar.js",
+    "tree-sitter.json",
+    "queries/*",
+    "src/**"
+  ],
+  "scripts": {
+    "generate": "tree-sitter generate",
+    "test": "tree-sitter test"
+  },
+  "devDependencies": {
+    "tree-sitter-cli": "^0.25.8"
+  }
+}

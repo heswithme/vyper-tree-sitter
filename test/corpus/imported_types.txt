@@ -1,0 +1,34 @@
+=========================
+Imported types
+=========================
+
+import foo
+
+@external
+def f() -> uint256:
+    cfg: foo.Bar
+    return 1
+
+---
+
+(source_file
+  (import_statement
+    (import_item
+      (dotted_name
+        (identifier))))
+  (function_definition
+    (decorator
+      name: (identifier))
+    (function_signature
+      name: (identifier)
+      return_type: (identifier))
+    (block
+      (state_variable_declaration
+        name: (identifier)
+        type: (imported_type
+          (identifier)
+          (identifier)))
+      (return_statement
+        (atom_expression
+          (atom
+            (integer)))))))

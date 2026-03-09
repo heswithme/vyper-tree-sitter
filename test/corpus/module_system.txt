@@ -1,0 +1,84 @@
+=========================
+Module system
+=========================
+
+# pragma version 0.4.3
+"""module docs"""
+
+from snekmate.auth import ownable
+initializes: ownable
+exports: (
+    ownable.owner,
+    ownable.transfer_ownership,
+)
+
+from ..src import OApp
+initializes: OApp[ownable := ownable]
+exports: (
+    OApp.endpoint,
+    OApp.setDelegate,
+)
+
+---
+
+(source_file
+  (module_docstring
+    (docstring
+      (docstring_chunk_double)))
+  (from_import_statement
+    (relative_import_path
+      (dotted_name
+        (identifier)
+        (identifier)))
+    (import_list
+      (import_item
+        (dotted_name
+          (identifier)))))
+  (initializes_statement
+    (identifier))
+  (exports_declaration
+    (tuple
+      (soft_line_break)
+      (atom_expression
+        (attribute
+          (atom_expression
+            (identifier))
+          (identifier)))
+      (soft_line_break)
+      (atom_expression
+        (attribute
+          (atom_expression
+            (identifier))
+          (identifier)))
+      (soft_line_break_end)))
+  (from_import_statement
+    (relative_import_path
+      (dotted_name
+        (identifier)))
+    (import_list
+      (import_item
+        (dotted_name
+          (identifier)))))
+  (initializes_statement
+    (module_initialization
+      (identifier)
+      (module_binding_list
+        (module_binding
+          (identifier)
+          (atom_expression
+            (identifier))))))
+  (exports_declaration
+    (tuple
+      (soft_line_break)
+      (atom_expression
+        (attribute
+          (atom_expression
+            (identifier))
+          (identifier)))
+      (soft_line_break)
+      (atom_expression
+        (attribute
+          (atom_expression
+            (identifier))
+          (identifier)))
+      (soft_line_break_end))))

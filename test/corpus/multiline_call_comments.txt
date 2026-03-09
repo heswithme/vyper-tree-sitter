@@ -1,0 +1,81 @@
+=========================
+Multiline call comments
+=========================
+
+@internal
+@pure
+def append(_cmd: Bytes[64], _to: address) -> Bytes[64]:
+    return concat(
+        # current cmd
+        convert(_cmd, Bytes[32]),
+        # recipient
+        convert(_to, bytes20),
+    )
+
+---
+
+(source_file
+  (function_definition
+    (decorator
+      (identifier))
+    (decorator
+      (identifier))
+    (function_signature
+      (identifier)
+      (parameter_list
+        (parameter
+          (identifier)
+          (subscripted_type
+            (identifier)
+            (atom_expression
+              (atom
+                (integer)))))
+        (parameter
+          (identifier)
+          (identifier)))
+      (subscripted_type
+        (identifier)
+        (atom_expression
+          (atom
+            (integer)))))
+    (block
+      (return_statement
+        (atom_expression
+          (call
+            (atom_expression
+              (identifier))
+            (argument_list
+              (soft_line_break)
+              (soft_line_break)
+              (argument
+                (atom_expression
+                  (call
+                    (atom_expression
+                      (identifier))
+                    (argument_list
+                      (argument
+                        (atom_expression
+                          (identifier)))
+                      (argument
+                        (atom_expression
+                          (subscript
+                            (atom_expression
+                              (identifier))
+                            (atom_expression
+                              (atom
+                                (integer))))))))))
+              (soft_line_break)
+              (soft_line_break)
+              (argument
+                (atom_expression
+                  (call
+                    (atom_expression
+                      (identifier))
+                    (argument_list
+                      (argument
+                        (atom_expression
+                          (identifier)))
+                      (argument
+                        (atom_expression
+                          (identifier)))))))
+              (soft_line_break))))))))

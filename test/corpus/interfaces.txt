@@ -1,0 +1,38 @@
+=========================
+Interfaces and exports
+=========================
+
+interface ERC20:
+    def transfer(to: address, amount: uint256) -> bool: nonpayable
+
+implements: ERC20
+exports: (foo, bar.baz)
+
+---
+
+(source_file
+  (interface_declaration
+    name: (identifier)
+    (interface_member
+      (function_signature
+        name: (identifier)
+        (parameter_list
+          (parameter
+            name: (identifier)
+            type: (identifier))
+          (parameter
+            name: (identifier)
+            type: (identifier)))
+        return_type: (identifier))
+      (mutability)))
+  (implements_statement
+    (identifier))
+  (exports_declaration
+    (tuple
+      (atom_expression
+        (identifier))
+      (atom_expression
+        (attribute
+          value: (atom_expression
+            (identifier))
+          attribute: (identifier))))))

@@ -1,0 +1,20 @@
+=========================
+Declaration edge cases
+=========================
+
+enum Mode:
+    A
+    B
+
+event Empty:
+    pass
+
+---
+
+(source_file
+  (enum_declaration
+    name: (identifier)
+    (identifier)
+    (identifier))
+  (event_declaration
+    name: (identifier)))

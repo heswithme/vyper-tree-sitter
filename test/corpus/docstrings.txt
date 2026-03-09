@@ -1,0 +1,27 @@
+=========================
+Docstrings
+=========================
+
+"""module docs"""
+
+@external
+def f():
+    """function docs"""
+    pass
+
+---
+
+(source_file
+  (module_docstring
+    (docstring
+      (docstring_chunk_double)))
+  (function_definition
+    (decorator
+      name: (identifier))
+    (function_signature
+      name: (identifier))
+    (block
+      (docstring_statement
+        (docstring
+          (docstring_chunk_double)))
+      (pass_statement))))

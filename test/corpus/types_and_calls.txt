@@ -1,0 +1,92 @@
+=========================
+Advanced types and calls
+=========================
+
+token: public(ERC20)
+values: DynArray[uint256, 10]
+allowances: HashMap[address, HashMap[address, uint256]]
+
+@external
+def run(to: address, amount: uint256):
+    result: bool = extcall self.token.transfer(to, amount)
+    balance: uint256 = staticcall self.token.balanceOf(to)
+
+---
+
+(source_file
+  (state_variable_declaration
+    name: (identifier)
+    type: (variable_annotation
+      value: (identifier)))
+  (state_variable_declaration
+    name: (identifier)
+    type: (subscripted_type
+      (identifier)
+      (atom_expression
+        (identifier))
+      (atom_expression
+        (atom
+          (integer)))))
+  (state_variable_declaration
+    name: (identifier)
+    type: (subscripted_type
+      (identifier)
+      (atom_expression
+        (identifier))
+      (subscripted_type
+        (identifier)
+        (atom_expression
+          (identifier))
+        (identifier))))
+  (function_definition
+    (decorator
+      name: (identifier))
+    (function_signature
+      name: (identifier)
+      (parameter_list
+        (parameter
+          name: (identifier)
+          type: (identifier))
+        (parameter
+          name: (identifier)
+          type: (identifier))))
+    (block
+      (state_variable_declaration
+        name: (identifier)
+        type: (identifier)
+        value: (external_call
+          value: (atom_expression
+            (call
+              function: (atom_expression
+                (attribute
+                  value: (atom_expression
+                    (attribute
+                      value: (atom_expression
+                        (identifier))
+                      attribute: (identifier)))
+                  attribute: (identifier)))
+              (argument_list
+                (argument
+                  (atom_expression
+                    (identifier)))
+                (argument
+                  (atom_expression
+                    (identifier))))))))
+      (state_variable_declaration
+        name: (identifier)
+        type: (identifier)
+        value: (external_call
+          value: (atom_expression
+            (call
+              function: (atom_expression
+                (attribute
+                  value: (atom_expression
+                    (attribute
+                      value: (atom_expression
+                        (identifier))
+                      attribute: (identifier)))
+                  attribute: (identifier)))
+              (argument_list
+                (argument
+                  (atom_expression
+                    (identifier)))))))))))

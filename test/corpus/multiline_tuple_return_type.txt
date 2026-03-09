@@ -1,0 +1,52 @@
+=========================
+Multiline tuple return type
+=========================
+
+@internal
+@view
+def prep(swap: address) -> (
+    uint256[2],
+    uint256,
+    uint256,
+):
+    return self._prep(swap)
+
+---
+
+(source_file
+  (function_definition
+    (decorator
+      (identifier))
+    (decorator
+      (identifier))
+    (function_signature
+      (identifier)
+      (parameter_list
+        (parameter
+          (identifier)
+          (identifier)))
+      (tuple_type
+        (soft_line_break)
+        (subscripted_type
+          (identifier)
+          (atom_expression
+            (atom
+              (integer))))
+        (soft_line_break)
+        (identifier)
+        (soft_line_break)
+        (identifier)
+        (soft_line_break)))
+    (block
+      (return_statement
+        (atom_expression
+          (call
+            (atom_expression
+              (attribute
+                (atom_expression
+                  (identifier))
+                (identifier)))
+            (argument_list
+              (argument
+                (atom_expression
+                  (identifier))))))))))

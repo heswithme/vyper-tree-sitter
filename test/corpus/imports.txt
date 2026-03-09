@@ -1,0 +1,27 @@
+=========================
+Imports and aliases
+=========================
+
+import foo as bar
+from .interfaces import ERC20, ERC721 as NFT
+
+---
+
+(source_file
+  (import_statement
+    (import_item
+      (dotted_name
+        (identifier))
+      (identifier)))
+  (from_import_statement
+    (relative_import_path
+      (dotted_name
+        (identifier)))
+    (import_list
+      (import_item
+        (dotted_name
+          (identifier)))
+      (import_item
+        (dotted_name
+          (identifier))
+        (identifier)))))

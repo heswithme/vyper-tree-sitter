@@ -1,0 +1,64 @@
+========================
+Control flow and calls
+========================
+
+@external
+def mint(receiver: address, value: uint256):
+    assert msg.sender == self.owner, "not owner"
+    self.total_supply += value
+    log Transfer(msg.sender, receiver, value)
+
+---
+
+(source_file
+  (function_definition
+    (decorator
+      name: (identifier))
+    (function_signature
+      name: (identifier)
+      (parameter_list
+        (parameter
+          name: (identifier)
+          type: (identifier))
+        (parameter
+          name: (identifier)
+          type: (identifier))))
+    (block
+      (assert_statement
+        (binary_expression
+          left: (atom_expression
+            (attribute
+              value: (atom_expression
+                (identifier))
+              attribute: (identifier)))
+          right: (atom_expression
+            (attribute
+              value: (atom_expression
+                (identifier))
+              attribute: (identifier))))
+        (atom_expression
+          (atom
+            (string))))
+      (augmented_assignment
+        left: (atom_expression
+          (attribute
+            value: (atom_expression
+              (identifier))
+            attribute: (identifier)))
+        right: (atom_expression
+          (identifier)))
+      (log_statement
+        (identifier)
+        (argument_list
+          (argument
+            (atom_expression
+              (attribute
+                value: (atom_expression
+                  (identifier))
+                attribute: (identifier))))
+          (argument
+            (atom_expression
+              (identifier)))
+          (argument
+            (atom_expression
+              (identifier))))))))

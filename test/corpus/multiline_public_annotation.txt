@@ -1,0 +1,25 @@
+=========================
+Multiline public annotation
+=========================
+
+commitment_count: public(
+    HashMap[uint256, HashMap[bytes32, uint256]]
+)
+
+---
+
+(source_file
+  (state_variable_declaration
+    name: (identifier)
+    type: (variable_annotation
+      (soft_line_break)
+      value: (subscripted_type
+        (identifier)
+        (atom_expression
+          (identifier))
+        (subscripted_type
+          (identifier)
+          (atom_expression
+            (identifier))
+          (identifier)))
+      (soft_line_break_end))))

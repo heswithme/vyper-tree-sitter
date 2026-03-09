@@ -1,0 +1,47 @@
+=========================
+Multiline parameter defaults
+=========================
+
+@view
+@external
+def get_blockhash(
+    _block_number: uint256 = block.number - 65, _avoid_failure: bool = False
+) -> (uint256, bytes32):
+    pass
+
+---
+
+(source_file
+  (function_definition
+    (decorator
+      name: (identifier))
+    (decorator
+      name: (identifier))
+    (function_signature
+      name: (identifier)
+      (parameter_list
+        (soft_line_break)
+        (parameter
+          name: (identifier)
+          type: (identifier)
+          default: (binary_expression
+            left: (atom_expression
+              (attribute
+                value: (atom_expression
+                  (identifier))
+                attribute: (identifier)))
+            right: (atom_expression
+              (atom
+                (integer)))))
+        (parameter
+          name: (identifier)
+          type: (identifier)
+          default: (atom_expression
+            (atom
+              (boolean))))
+        (soft_line_break))
+      return_type: (tuple_type
+        (identifier)
+        (identifier)))
+    (block
+      (pass_statement))))

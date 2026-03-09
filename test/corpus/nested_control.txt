@@ -1,0 +1,64 @@
+=========================
+Nested control flow
+=========================
+
+@external
+def demo(xs: DynArray[uint256, 10]):
+    for i: uint256 in xs:
+        if i > 3:
+            raise "too big"
+        elif i == 0:
+            continue
+        else:
+            break
+
+---
+
+(source_file
+  (function_definition
+    (decorator
+      name: (identifier))
+    (function_signature
+      name: (identifier)
+      (parameter_list
+        (parameter
+          name: (identifier)
+          type: (subscripted_type
+            (identifier)
+            (atom_expression
+              (identifier))
+            (atom_expression
+              (atom
+                (integer)))))))
+    (block
+      (for_statement
+        target: (typed_loop_variable
+          name: (identifier)
+          type: (identifier))
+        iterator: (atom_expression
+          (identifier))
+        (block
+          (if_statement
+            condition: (binary_expression
+              left: (atom_expression
+                (identifier))
+              right: (atom_expression
+                (atom
+                  (integer))))
+            (block
+              (raise_statement
+                (atom_expression
+                  (atom
+                    (string)))))
+            (elif_clause
+              condition: (binary_expression
+                left: (atom_expression
+                  (identifier))
+                right: (atom_expression
+                  (atom
+                    (integer))))
+              (block
+                (continue_statement)))
+            (else_clause
+              (block
+                (break_statement)))))))))
