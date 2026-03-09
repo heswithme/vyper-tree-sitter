@@ -7,6 +7,17 @@ commitment_count: public(
 )
 
 ---
+(source_file [0, 0] - [3, 0]
+  (state_variable_declaration [0, 0] - [3, 0]
+    name: (identifier [0, 0] - [0, 16])
+    type: (variable_annotation [0, 18] - [2, 1]
+      (soft_line_break [1, 0] - [1, 0])
+      value: (hash_map_type [1, 4] - [1, 47]
+        (identifier [1, 12] - [1, 19])
+        (hash_map_type [1, 21] - [1, 46]
+          (identifier [1, 29] - [1, 36])
+          (identifier [1, 38] - [1, 45])))
+      (soft_line_break_end [2, 0] - [2, 0]))))
 
 (source_file
   (state_variable_declaration

@@ -10,6 +10,20 @@ def f():
     pass
 
 ---
+(source_file [0, 0] - [6, 0]
+  (module_docstring [0, 0] - [0, 17]
+    (docstring [0, 0] - [0, 17]
+      (docstring_chunk_double [0, 3] - [0, 14])))
+  (function_definition [2, 0] - [6, 0]
+    (decorator [2, 0] - [3, 0]
+      name: (identifier [2, 1] - [2, 9]))
+    (function_signature [3, 0] - [3, 7]
+      name: (identifier [3, 4] - [3, 5]))
+    (block [4, 0] - [6, 0]
+      (docstring_statement [4, 4] - [5, 0]
+        (docstring [4, 4] - [4, 23]
+          (docstring_chunk_double [4, 7] - [4, 20])))
+      (pass_statement [5, 4] - [6, 0]))))
 
 (source_file
   (module_docstring

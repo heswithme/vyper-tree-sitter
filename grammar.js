@@ -41,16 +41,25 @@ module.exports = grammar({
     [$.atom_expression, $.subscripted_type],
     [$.atom_expression, $.imported_type],
     [$.assignment_target_list, $.expression],
+    [$.assignment_target_list, $._expression_without_conditional],
+    [$.log_statement, $.atom_expression],
     [$.log_statement, $.atom_expression],
     [$.parenthesized_expression, $.tuple],
     [$.parenthesized_expression, $.multiline_tuple],
+    [$.parenthesized_expression, $.tuple_type],
     [$.tuple, $.multiline_tuple],
     [$.parameter_list],
     [$.argument_list],
+    [$.argument, $.argument_list],
+    [$.argument_list, $.call],
     [$.import_list],
     [$.wrapped_binary_expression],
     [$.binary_expression, $.wrapped_binary_expression],
     [$.list],
+    [$.expression, $.conditional_expression],
+    [$.conditional_expression, $.walrus_expression],
+    [$.call],
+    [$.call, $.parenthesized_expression, $.multiline_tuple],
   ],
 
   rules: {
@@ -81,7 +90,10 @@ module.exports = grammar({
     ),
 
     pragma_directive: $ => seq(
-      token(prec(2, /#\s*pragma[^\n]*/)),
+      token(prec(2, choice(
+        /#\s*pragma[^\n]*/,
+        /#\s*@version[^\n]*/,
+      ))),
       $._newline,
     ),
 
@@ -140,7 +152,7 @@ module.exports = grammar({
       ":",
       $._newline,
       $._indent,
-      repeat1($.struct_member),
+      repeat1(choice($.struct_member, $._newline)),
       $._dedent,
     ),
 
@@ -158,7 +170,7 @@ struct_member: $ => seq(
       ":",
       $._newline,
       $._indent,
-      repeat1($.interface_member),
+      repeat1(choice($.interface_member, $._newline)),
       $._dedent,
     ),
 
@@ -179,7 +191,7 @@ interface_member: $ => seq(
         seq(
           $._newline,
           $._indent,
-          repeat1($.event_member),
+          repeat1(choice($.event_member, $._newline)),
           $._dedent,
         ),
         seq($._newline, $._indent, "pass", $._newline, $._dedent),
@@ -207,7 +219,7 @@ event_member: $ => seq(
       ":",
       $._newline,
       $._indent,
-      repeat1(seq($.identifier, $._newline)),
+      repeat1(choice(seq($.identifier, optional($.comment), $._newline), $._newline)),
       $._dedent,
     ),
 
@@ -217,7 +229,7 @@ event_member: $ => seq(
       ":",
       $._newline,
       $._indent,
-      repeat1(seq($.identifier, $._newline)),
+      repeat1(choice(seq($.identifier, optional($.comment), $._newline), $._newline)),
       $._dedent,
     ),
 
@@ -254,7 +266,7 @@ event_member: $ => seq(
       $.module_binding,
       repeat(seq(optional($.soft_line_break), ",", optional($.soft_line_break), $.module_binding)),
       optional(seq(optional($.soft_line_break), ",")),
-      optional($.soft_line_break_end),
+      optional($.soft_line_break),
     ),
 
     module_binding: $ => seq(
@@ -290,7 +302,7 @@ event_member: $ => seq(
       "(",
       optional($.soft_line_break),
       $.type,
-      optional($.soft_line_break_end),
+      optional($.soft_line_break),
       ")",
     ),
 
@@ -299,7 +311,7 @@ event_member: $ => seq(
       "(",
       optional($.soft_line_break),
       field("value", choice($.variable_annotation, $.type)),
-      optional($.soft_line_break_end),
+      optional($.soft_line_break),
       ")",
     ),
 
@@ -511,8 +523,9 @@ event_member: $ => seq(
     ),
 
     argument: $ => choice(
-      $.expression,
       $.keyword_argument,
+      $.wrapped_binary_expression,
+      $.expression,
     ),
 
     keyword_argument: $ => seq(
@@ -522,11 +535,6 @@ event_member: $ => seq(
     ),
 
     argument_list: $ => prec.right(choice(
-      seq(
-        repeat1($.soft_line_break),
-        $.argument,
-        repeat1($.soft_line_break),
-      ),
       seq(
         $.argument,
         repeat(seq(",", repeat($.soft_line_break), $.argument)),
@@ -542,13 +550,22 @@ event_member: $ => seq(
       ),
     )),
 
-    soft_line_break: $ => seq(
-      $._newline,
-    ),
-
-    soft_line_break_end: $ => $._newline,
+    soft_line_break: _ => token(seq(/\r?\n/, /[ \t\f\r]*/)),
 
     expression: $ => choice(
+      $.conditional_expression,
+      $._expression_without_conditional,
+    ),
+
+    conditional_expression: $ => prec.right(PREC.conditional, seq(
+      field("consequence", $._expression_without_conditional),
+      "if",
+      field("condition", $.expression),
+      "else",
+      field("alternative", $.expression),
+    )),
+
+    _expression_without_conditional: $ => choice(
       $.atom_expression,
       $.external_call,
       $.walrus_expression,
@@ -672,12 +689,13 @@ event_member: $ => seq(
       )),
     ),
 
-    call: $ => prec(PREC.call, seq(
-      field("function", $.atom_expression),
-      "(",
-      optional($.argument_list),
-      repeat($.soft_line_break),
-      ")",
+    call: $ => prec(PREC.call, choice(
+      seq(
+        field("function", $.atom_expression),
+        "(",
+        optional($.argument_list),
+        ")",
+      ),
     )),
 
     external_call: $ => prec(PREC.unary, seq(
@@ -711,7 +729,7 @@ event_member: $ => seq(
       $.expression,
       repeat(seq(optional($.soft_line_break), ",", optional($.soft_line_break), $.expression)),
       optional(seq(optional($.soft_line_break), ",")),
-      optional($.soft_line_break_end),
+      optional($.soft_line_break),
       ")",
     ),
 
@@ -728,16 +746,27 @@ event_member: $ => seq(
         $.expression,
         repeat(seq(optional($.soft_line_break), ",", optional($.soft_line_break), $.expression)),
         optional(seq(optional($.soft_line_break), ",")),
-        optional($.soft_line_break_end),
+        optional($.soft_line_break),
         "]",
       ),
     ),
 
-    dict: $ => seq(
-      "{",
-      optional(commaSep1($.dict_pair)),
-      optional(","),
-      "}",
+    dict: $ => choice(
+      seq(
+        "{",
+        optional(commaSep1($.dict_pair)),
+        optional(","),
+        "}",
+      ),
+      seq(
+        "{",
+        repeat1($.soft_line_break),
+        $.dict_pair,
+        repeat(seq(optional($.soft_line_break), ",", repeat($.soft_line_break), $.dict_pair)),
+        optional(seq(optional($.soft_line_break), ",")),
+        repeat($.soft_line_break),
+        "}",
+      ),
     ),
 
     dict_pair: $ => seq(
@@ -814,12 +843,47 @@ event_member: $ => seq(
     ),
 
     type: $ => choice(
+      $.postfix_type,
       $.identifier,
       $.imported_type,
       $.type_call,
       $.tuple_type,
+      $.dyn_array_type,
+      $.hash_map_type,
+      $.string_type,
+      $.bytes_type,
       $.subscripted_type,
     ),
+
+    postfix_type: $ => prec(3, seq(
+      choice(
+        $.identifier,
+        $.imported_type,
+        $.type_call,
+        $.tuple_type,
+        $.dyn_array_type,
+        $.hash_map_type,
+        $.string_type,
+        $.bytes_type,
+      ),
+      repeat1(seq(
+        "[",
+        choice(
+          seq(
+            commaSep1(choice($.type, $.expression)),
+            optional(","),
+          ),
+          seq(
+            repeat1($.soft_line_break),
+            choice($.type, $.expression),
+            repeat(seq(optional($.soft_line_break), ",", repeat($.soft_line_break), choice($.type, $.expression))),
+            optional(seq(optional($.soft_line_break), ",")),
+            repeat($.soft_line_break),
+          ),
+        ),
+        "]",
+      )),
+    )),
 
     type_call: $ => seq(
       $.identifier,
@@ -847,21 +911,96 @@ event_member: $ => seq(
       ),
     ),
 
-    subscripted_type: $ => seq(
+    dyn_array_type: $ => prec(2, choice(
+      seq(
+        "DynArray",
+        "[",
+        $.type,
+        ",",
+        $.expression,
+        "]",
+      ),
+      seq(
+        "DynArray",
+        "[",
+        repeat1($.soft_line_break),
+        $.type,
+        repeat($.soft_line_break),
+        ",",
+        repeat($.soft_line_break),
+        $.expression,
+        repeat($.soft_line_break),
+        "]",
+      ),
+    )),
+
+    hash_map_type: $ => prec(2, choice(
+      seq(
+        "HashMap",
+        "[",
+        $.type,
+        ",",
+        $.type,
+        "]",
+      ),
+      seq(
+        "HashMap",
+        "[",
+        repeat1($.soft_line_break),
+        $.type,
+        repeat($.soft_line_break),
+        ",",
+        repeat($.soft_line_break),
+        $.type,
+        repeat($.soft_line_break),
+        "]",
+      ),
+    )),
+
+    string_type: $ => prec(2, choice(
+      seq("String", "[", $.expression, "]"),
+      seq(
+        "String",
+        "[",
+        repeat1($.soft_line_break),
+        $.expression,
+        repeat($.soft_line_break),
+        "]",
+      ),
+    )),
+
+    bytes_type: $ => prec(2, choice(
+      seq("Bytes", "[", $.expression, "]"),
+      seq(
+        "Bytes",
+        "[",
+        repeat1($.soft_line_break),
+        $.expression,
+        repeat($.soft_line_break),
+        "]",
+      ),
+    )),
+
+    subscripted_type: $ => prec(1, seq(
       $.identifier,
       "[",
-      commaSep1(choice($.type, $.expression)),
-      optional(","),
+      choice(
+        seq(
+          commaSep1(choice($.type, $.expression)),
+          optional(","),
+        ),
+        seq(
+          repeat1($.soft_line_break),
+          choice($.type, $.expression),
+          repeat(seq(optional($.soft_line_break), ",", repeat($.soft_line_break), choice($.type, $.expression))),
+          optional(seq(optional($.soft_line_break), ",")),
+          repeat($.soft_line_break),
+        ),
+      ),
       "]",
-      repeat(seq(
-        "[",
-        commaSep1(choice($.type, $.expression)),
-        optional(","),
-        "]",
-      )),
-    ),
+    )),
 
-    comment: _ => token(prec(1, seq("#", /.*/))),
+    comment: _ => token(prec(-1, seq("#", /.*/))),
     line_continuation: _ => token(seq("\\", /\r?\n/)),
     identifier: _ => /[A-Za-z_][A-Za-z0-9_]*/,
     integer: _ => token(choice(

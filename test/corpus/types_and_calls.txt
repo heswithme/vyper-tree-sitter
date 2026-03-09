@@ -12,6 +12,77 @@ def run(to: address, amount: uint256):
     balance: uint256 = staticcall self.token.balanceOf(to)
 
 ---
+(source_file [0, 0] - [8, 0]
+  (state_variable_declaration [0, 0] - [1, 0]
+    name: (identifier [0, 0] - [0, 5])
+    type: (variable_annotation [0, 7] - [0, 20]
+      value: (identifier [0, 14] - [0, 19])))
+  (state_variable_declaration [1, 0] - [2, 0]
+    name: (identifier [1, 0] - [1, 6])
+    type: (dyn_array_type [1, 8] - [1, 29]
+      (identifier [1, 17] - [1, 24])
+      (atom_expression [1, 26] - [1, 28]
+        (atom [1, 26] - [1, 28]
+          (integer [1, 26] - [1, 28])))))
+  (state_variable_declaration [2, 0] - [3, 0]
+    name: (identifier [2, 0] - [2, 10])
+    type: (hash_map_type [2, 12] - [2, 55]
+      (identifier [2, 20] - [2, 27])
+      (hash_map_type [2, 29] - [2, 54]
+        (identifier [2, 37] - [2, 44])
+        (identifier [2, 46] - [2, 53]))))
+  (function_definition [4, 0] - [8, 0]
+    (decorator [4, 0] - [5, 0]
+      name: (identifier [4, 1] - [4, 9]))
+    (function_signature [5, 0] - [5, 37]
+      name: (identifier [5, 4] - [5, 7])
+      (parameter_list [5, 8] - [5, 36]
+        (parameter [5, 8] - [5, 19]
+          name: (identifier [5, 8] - [5, 10])
+          type: (identifier [5, 12] - [5, 19]))
+        (parameter [5, 21] - [5, 36]
+          name: (identifier [5, 21] - [5, 27])
+          type: (identifier [5, 29] - [5, 36]))))
+    (block [6, 0] - [8, 0]
+      (state_variable_declaration [6, 4] - [7, 0]
+        name: (identifier [6, 4] - [6, 10])
+        type: (identifier [6, 12] - [6, 16])
+        value: (external_call [6, 19] - [6, 58]
+          value: (atom_expression [6, 27] - [6, 58]
+            (call [6, 27] - [6, 58]
+              function: (atom_expression [6, 27] - [6, 46]
+                (attribute [6, 27] - [6, 46]
+                  value: (atom_expression [6, 27] - [6, 37]
+                    (attribute [6, 27] - [6, 37]
+                      value: (atom_expression [6, 27] - [6, 31]
+                        (identifier [6, 27] - [6, 31]))
+                      attribute: (identifier [6, 32] - [6, 37])))
+                  attribute: (identifier [6, 38] - [6, 46])))
+              (argument_list [6, 47] - [6, 57]
+                (argument [6, 47] - [6, 49]
+                  (atom_expression [6, 47] - [6, 49]
+                    (identifier [6, 47] - [6, 49])))
+                (argument [6, 51] - [6, 57]
+                  (atom_expression [6, 51] - [6, 57]
+                    (identifier [6, 51] - [6, 57]))))))))
+      (state_variable_declaration [7, 4] - [8, 0]
+        name: (identifier [7, 4] - [7, 11])
+        type: (identifier [7, 13] - [7, 20])
+        value: (external_call [7, 23] - [7, 58]
+          value: (atom_expression [7, 34] - [7, 58]
+            (call [7, 34] - [7, 58]
+              function: (atom_expression [7, 34] - [7, 54]
+                (attribute [7, 34] - [7, 54]
+                  value: (atom_expression [7, 34] - [7, 44]
+                    (attribute [7, 34] - [7, 44]
+                      value: (atom_expression [7, 34] - [7, 38]
+                        (identifier [7, 34] - [7, 38]))
+                      attribute: (identifier [7, 39] - [7, 44])))
+                  attribute: (identifier [7, 45] - [7, 54])))
+              (argument_list [7, 55] - [7, 57]
+                (argument [7, 55] - [7, 57]
+                  (atom_expression [7, 55] - [7, 57]
+                    (identifier [7, 55] - [7, 57])))))))))))
 
 (source_file
   (state_variable_declaration

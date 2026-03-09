@@ -10,6 +10,27 @@ def f() -> uint256:
     return 1
 
 ---
+(source_file [0, 0] - [6, 0]
+  (import_statement [0, 0] - [1, 0]
+    (import_item [0, 7] - [0, 10]
+      (dotted_name [0, 7] - [0, 10]
+        (identifier [0, 7] - [0, 10]))))
+  (function_definition [2, 0] - [6, 0]
+    (decorator [2, 0] - [3, 0]
+      name: (identifier [2, 1] - [2, 9]))
+    (function_signature [3, 0] - [3, 18]
+      name: (identifier [3, 4] - [3, 5])
+      return_type: (identifier [3, 11] - [3, 18]))
+    (block [4, 0] - [6, 0]
+      (state_variable_declaration [4, 4] - [5, 0]
+        name: (identifier [4, 4] - [4, 7])
+        type: (imported_type [4, 9] - [4, 16]
+          (identifier [4, 9] - [4, 12])
+          (identifier [4, 13] - [4, 16])))
+      (return_statement [5, 4] - [6, 0]
+        (atom_expression [5, 11] - [5, 12]
+          (atom [5, 11] - [5, 12]
+            (integer [5, 11] - [5, 12])))))))
 
 (source_file
   (import_statement

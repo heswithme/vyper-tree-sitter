@@ -1,4 +1,5 @@
 const PREC = {
+  conditional: 0,
   or: 1,
   and: 2,
   compare: 3,

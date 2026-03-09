@@ -39,4 +39,26 @@ if ! [ -s "$filtered_tmpfile" ]; then
   exit 1
 fi
 
-tree-sitter parse -p . --json-summary $(cat "$filtered_tmpfile")
+total=0
+successful=0
+
+while IFS= read -r file; do
+  total=$((total + 1))
+  if output="$(tree-sitter parse -p . "$file" 2>&1)"; then
+    rc=0
+  else
+    rc=$?
+  fi
+
+  if [ "$rc" -ne 0 ]; then
+    printf '%s\n' "$output"
+  else
+    successful=$((successful + 1))
+  fi
+done < "$filtered_tmpfile"
+
+printf '\nSuccessful parses: %d/%d\n' "$successful" "$total"
+
+if [ "$successful" -ne "$total" ]; then
+  exit 1
+fi

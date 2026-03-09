@@ -16,6 +16,115 @@ def f(xs: DynArray[address, 5], a: address, data: Bytes[64]) -> bool:
     return a not in xs or a in xs
 
 ---
+(source_file [0, 0] - [12, 0]
+  (from_import_statement [0, 0] - [1, 0]
+    (relative_import_path [0, 5] - [0, 8]
+      (dotted_name [0, 5] - [0, 8]
+        (identifier [0, 5] - [0, 8])))
+    (parenthesized_import_list [0, 17] - [0, 33]
+      (import_item [0, 17] - [0, 20]
+        (dotted_name [0, 17] - [0, 20]
+          (identifier [0, 17] - [0, 20])))
+      (import_item [0, 22] - [0, 32]
+        (dotted_name [0, 22] - [0, 25]
+          (identifier [0, 22] - [0, 25]))
+        (identifier [0, 29] - [0, 32]))))
+  (from_import_statement [1, 0] - [2, 0]
+    (relative_import_path [1, 5] - [1, 6]))
+  (function_definition [3, 0] - [12, 0]
+    (decorator [3, 0] - [4, 0]
+      name: (identifier [3, 1] - [3, 5]))
+    (decorator [4, 0] - [5, 0]
+      name: (identifier [4, 1] - [4, 9]))
+    (function_signature [5, 0] - [5, 68]
+      name: (identifier [5, 4] - [5, 5])
+      (parameter_list [5, 6] - [5, 59]
+        (parameter [5, 6] - [5, 30]
+          name: (identifier [5, 6] - [5, 8])
+          type: (dyn_array_type [5, 10] - [5, 30]
+            (identifier [5, 19] - [5, 26])
+            (atom_expression [5, 28] - [5, 29]
+              (atom [5, 28] - [5, 29]
+                (integer [5, 28] - [5, 29])))))
+        (parameter [5, 32] - [5, 42]
+          name: (identifier [5, 32] - [5, 33])
+          type: (identifier [5, 35] - [5, 42]))
+        (parameter [5, 44] - [5, 59]
+          name: (identifier [5, 44] - [5, 48])
+          type: (bytes_type [5, 50] - [5, 59]
+            (atom_expression [5, 56] - [5, 58]
+              (atom [5, 56] - [5, 58]
+                (integer [5, 56] - [5, 58]))))))
+      return_type: (identifier [5, 64] - [5, 68]))
+    (block [6, 0] - [12, 0]
+      (state_variable_declaration [6, 4] - [7, 0]
+        name: (identifier [6, 4] - [6, 7])
+        type: (dyn_array_type [6, 9] - [6, 29]
+          (identifier [6, 18] - [6, 25])
+          (atom_expression [6, 27] - [6, 28]
+            (atom [6, 27] - [6, 28]
+              (integer [6, 27] - [6, 28]))))
+        value: (atom_expression [6, 32] - [6, 41]
+          (atom [6, 32] - [6, 41]
+            (list [6, 32] - [6, 41]
+              (atom_expression [6, 33] - [6, 34]
+                (atom [6, 33] - [6, 34]
+                  (integer [6, 33] - [6, 34])))
+              (atom_expression [6, 36] - [6, 37]
+                (atom [6, 36] - [6, 37]
+                  (integer [6, 36] - [6, 37])))
+              (atom_expression [6, 39] - [6, 40]
+                (atom [6, 39] - [6, 40]
+                  (integer [6, 39] - [6, 40])))))))
+      (state_variable_declaration [7, 4] - [8, 0]
+        name: (identifier [7, 4] - [7, 7])
+        type: (tuple_type [7, 9] - [7, 27]
+          (identifier [7, 10] - [7, 17])
+          (identifier [7, 19] - [7, 26]))
+        value: (atom_expression [7, 30] - [7, 36]
+          (atom [7, 30] - [7, 36]
+            (tuple [7, 30] - [7, 36]
+              (atom_expression [7, 31] - [7, 32]
+                (atom [7, 31] - [7, 32]
+                  (integer [7, 31] - [7, 32])))
+              (atom_expression [7, 34] - [7, 35]
+                (identifier [7, 34] - [7, 35]))))))
+      (state_variable_declaration [8, 4] - [9, 0]
+        name: (identifier [8, 4] - [8, 9])
+        type: (hash_map_type [8, 11] - [8, 36]
+          (identifier [8, 19] - [8, 26])
+          (identifier [8, 28] - [8, 35])))
+      (state_variable_declaration [9, 4] - [10, 0]
+        name: (identifier [9, 4] - [9, 7])
+        type: (identifier [9, 9] - [9, 16])
+        value: (atom_expression [9, 19] - [9, 33]
+          (atom [9, 19] - [9, 33]
+            (special_builtin [9, 19] - [9, 33]
+              (empty_builtin [9, 19] - [9, 33]
+                (identifier [9, 25] - [9, 32]))))))
+      (state_variable_declaration [10, 4] - [11, 0]
+        name: (identifier [10, 4] - [10, 11])
+        type: (identifier [10, 13] - [10, 20])
+        value: (atom_expression [10, 23] - [10, 48]
+          (atom [10, 23] - [10, 48]
+            (special_builtin [10, 23] - [10, 48]
+              (abi_decode_builtin [10, 23] - [10, 48]
+                (argument [10, 34] - [10, 38]
+                  (atom_expression [10, 34] - [10, 38]
+                    (identifier [10, 34] - [10, 38])))
+                (identifier [10, 40] - [10, 47]))))))
+      (return_statement [11, 4] - [12, 0]
+        (binary_expression [11, 11] - [11, 33]
+          left: (binary_expression [11, 11] - [11, 22]
+            left: (atom_expression [11, 11] - [11, 12]
+              (identifier [11, 11] - [11, 12]))
+            right: (atom_expression [11, 20] - [11, 22]
+              (identifier [11, 20] - [11, 22])))
+          right: (binary_expression [11, 26] - [11, 33]
+            left: (atom_expression [11, 26] - [11, 27]
+              (identifier [11, 26] - [11, 27]))
+            right: (atom_expression [11, 31] - [11, 33]
+              (identifier [11, 31] - [11, 33]))))))))
 
 (source_file
   (from_import_statement

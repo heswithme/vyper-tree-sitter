@@ -119,6 +119,7 @@ void tree_sitter_vyper_external_scanner_deserialize(void *payload, const char *b
 
   if (size + sizeof(uint32_t) <= length) {
     memcpy(&scanner->pending_dedents, buffer + size, sizeof(uint32_t));
+    size += sizeof(uint32_t);
   }
 
   if (scanner->count == 0) {
@@ -158,9 +159,7 @@ bool tree_sitter_vyper_external_scanner_scan(void *payload, TSLexer *lexer, cons
             lexer->result_symbol = NEWLINE;
             return true;
           }
-          lexer->advance(lexer, true);
-          lexer->mark_end(lexer);
-          continue;
+          return false;
         }
         if (lexer->lookahead == 0) {
           break;
@@ -174,9 +173,7 @@ bool tree_sitter_vyper_external_scanner_scan(void *payload, TSLexer *lexer, cons
           lexer->result_symbol = NEWLINE;
           return true;
         }
-        lexer->advance(lexer, true);
-        lexer->mark_end(lexer);
-        continue;
+        return false;
       }
 
       if (lexer->lookahead == 0) {
@@ -225,6 +222,7 @@ bool tree_sitter_vyper_external_scanner_scan(void *payload, TSLexer *lexer, cons
     if (!valid_symbols[NEWLINE]) {
       return false;
     }
+
     lexer->advance(lexer, true);
     lexer->mark_end(lexer);
     lexer->result_symbol = NEWLINE;
@@ -233,16 +231,6 @@ bool tree_sitter_vyper_external_scanner_scan(void *payload, TSLexer *lexer, cons
 
   while (lexer->lookahead == ' ' || lexer->lookahead == '\t' || lexer->lookahead == '\f' || lexer->lookahead == '\r') {
     lexer->advance(lexer, true);
-  }
-
-  if (lexer->lookahead == '\n') {
-    if (!valid_symbols[NEWLINE]) {
-      return false;
-    }
-    lexer->advance(lexer, true);
-    lexer->mark_end(lexer);
-    lexer->result_symbol = NEWLINE;
-    return true;
   }
 
   // Handle end of file - emit remaining dedents only.

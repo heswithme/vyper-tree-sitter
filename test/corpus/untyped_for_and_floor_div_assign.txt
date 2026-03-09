@@ -10,6 +10,58 @@ def demo(_xp: uint256[2]):
     d_p //= 2 ** 2
 
 ---
+(source_file [0, 0] - [6, 0]
+  (function_definition [0, 0] - [6, 0]
+    (decorator [0, 0] - [1, 0]
+      name: (identifier [0, 1] - [0, 9]))
+    (function_signature [1, 0] - [1, 25]
+      name: (identifier [1, 4] - [1, 8])
+      (parameter_list [1, 9] - [1, 24]
+        (parameter [1, 9] - [1, 24]
+          name: (identifier [1, 9] - [1, 12])
+          type: (subscripted_type [1, 14] - [1, 24]
+            (identifier [1, 14] - [1, 21])
+            (atom_expression [1, 22] - [1, 23]
+              (atom [1, 22] - [1, 23]
+                (integer [1, 22] - [1, 23])))))))
+    (block [2, 0] - [6, 0]
+      (for_statement [2, 4] - [4, 4]
+        target: (identifier [2, 8] - [2, 9])
+        iterator: (atom_expression [2, 13] - [2, 21]
+          (call [2, 13] - [2, 21]
+            function: (atom_expression [2, 13] - [2, 18]
+              (identifier [2, 13] - [2, 18]))
+            (argument_list [2, 19] - [2, 20]
+              (argument [2, 19] - [2, 20]
+                (atom_expression [2, 19] - [2, 20]
+                  (atom [2, 19] - [2, 20]
+                    (integer [2, 19] - [2, 20])))))))
+        (block [3, 0] - [4, 4]
+          (state_variable_declaration [3, 8] - [4, 0]
+            name: (identifier [3, 8] - [3, 9])
+            type: (identifier [3, 11] - [3, 18])
+            value: (atom_expression [3, 21] - [3, 27]
+              (subscript [3, 21] - [3, 27]
+                value: (atom_expression [3, 21] - [3, 24]
+                  (identifier [3, 21] - [3, 24]))
+                index: (atom_expression [3, 25] - [3, 26]
+                  (identifier [3, 25] - [3, 26])))))))
+      (state_variable_declaration [4, 4] - [5, 0]
+        name: (identifier [4, 4] - [4, 7])
+        type: (identifier [4, 9] - [4, 16])
+        value: (atom_expression [4, 19] - [4, 21]
+          (atom [4, 19] - [4, 21]
+            (integer [4, 19] - [4, 21]))))
+      (augmented_assignment [5, 4] - [6, 0]
+        left: (atom_expression [5, 4] - [5, 7]
+          (identifier [5, 4] - [5, 7]))
+        right: (binary_expression [5, 12] - [5, 18]
+          left: (atom_expression [5, 12] - [5, 13]
+            (atom [5, 12] - [5, 13]
+              (integer [5, 12] - [5, 13])))
+          right: (atom_expression [5, 17] - [5, 18]
+            (atom [5, 17] - [5, 18]
+              (integer [5, 17] - [5, 18]))))))))
 
 (source_file
   (function_definition
