@@ -58,6 +58,21 @@ static void skip_comment_line(TSLexer *lexer) {
   }
 }
 
+static bool is_horizontal_whitespace(int32_t lookahead) {
+  return lookahead == ' ' || lookahead == '\t' || lookahead == '\f' || lookahead == '\r';
+}
+
+static bool is_closing_delimiter(int32_t lookahead) {
+  return lookahead == ')' || lookahead == ']' || lookahead == '}';
+}
+
+static bool emit_newline(TSLexer *lexer) {
+  lexer->advance(lexer, true);
+  lexer->mark_end(lexer);
+  lexer->result_symbol = NEWLINE;
+  return true;
+}
+
 static bool emit_line_break_token(TSLexer *lexer, const bool *valid_symbols) {
   bool wants_soft = valid_symbols[SOFT_NEWLINE] || valid_symbols[SOFT_NEWLINE_END];
   bool wants_newline = valid_symbols[NEWLINE];
@@ -69,13 +84,13 @@ static bool emit_line_break_token(TSLexer *lexer, const bool *valid_symbols) {
   lexer->advance(lexer, true);
 
   if (wants_soft) {
-    while (lexer->lookahead == ' ' || lexer->lookahead == '\t' || lexer->lookahead == '\f' || lexer->lookahead == '\r') {
+    while (is_horizontal_whitespace(lexer->lookahead)) {
       lexer->advance(lexer, true);
     }
 
     lexer->mark_end(lexer);
 
-    if ((lexer->lookahead == ')' || lexer->lookahead == ']' || lexer->lookahead == '}') && valid_symbols[SOFT_NEWLINE_END]) {
+    if (is_closing_delimiter(lexer->lookahead) && valid_symbols[SOFT_NEWLINE_END]) {
       lexer->result_symbol = SOFT_NEWLINE_END;
       return true;
     }
@@ -93,6 +108,104 @@ static bool emit_line_break_token(TSLexer *lexer, const bool *valid_symbols) {
   lexer->mark_end(lexer);
   lexer->result_symbol = NEWLINE;
   return true;
+}
+
+static bool emit_pending_dedent(Scanner *scanner, const bool *valid_symbols, TSLexer *lexer) {
+  if (scanner->pending_dedents == 0 || !valid_symbols[DEDENT]) {
+    return false;
+  }
+
+  scanner->pending_dedents--;
+  pop_indent(scanner);
+  lexer->result_symbol = DEDENT;
+  return true;
+}
+
+static uint32_t count_dedents(const Scanner *scanner, uint32_t indent) {
+  uint32_t dedents = 0;
+  while (scanner->count - dedents > 1 && scanner->indents[scanner->count - dedents - 1] > indent) {
+    dedents++;
+  }
+  return dedents;
+}
+
+static bool scan_beginning_of_line(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols) {
+  while (true) {
+    uint32_t indent = count_indent(lexer);
+
+    if (lexer->lookahead == '\r') {
+      lexer->advance(lexer, true);
+      continue;
+    }
+
+    if (lexer->lookahead == '#') {
+      skip_comment_line(lexer);
+      if (lexer->lookahead == '\n') {
+        if (valid_symbols[NEWLINE]) {
+          return emit_newline(lexer);
+        }
+        return false;
+      }
+      if (lexer->lookahead == 0) {
+        break;
+      }
+    }
+
+    if (lexer->lookahead == '\n') {
+      if (valid_symbols[NEWLINE]) {
+        return emit_newline(lexer);
+      }
+      return false;
+    }
+
+    if (lexer->lookahead == 0) {
+      break;
+    }
+
+    // Continuation lines that only close a surrounding delimiter should not
+    // participate in indentation handling.
+    if (is_closing_delimiter(lexer->lookahead)) {
+      return false;
+    }
+
+    uint32_t current_indent = top_indent(scanner);
+    if (indent > current_indent) {
+      if (valid_symbols[INDENT]) {
+        push_indent(scanner, indent);
+        lexer->result_symbol = INDENT;
+        return true;
+      }
+      return false;
+    }
+
+    if (indent < current_indent) {
+      if (!valid_symbols[DEDENT]) {
+        return false;
+      }
+
+      uint32_t dedents = count_dedents(scanner, indent);
+      if (dedents > 0) {
+        scanner->pending_dedents = dedents - 1;
+        pop_indent(scanner);
+        lexer->result_symbol = DEDENT;
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  return false;
+}
+
+static bool emit_eof_dedent(Scanner *scanner, const bool *valid_symbols, TSLexer *lexer) {
+  if (lexer->lookahead == 0 && scanner->count > 1 && valid_symbols[DEDENT]) {
+    pop_indent(scanner);
+    lexer->result_symbol = DEDENT;
+    return true;
+  }
+
+  return false;
 }
 
 void *tree_sitter_vyper_external_scanner_create(void) {
@@ -169,91 +282,13 @@ void tree_sitter_vyper_external_scanner_deserialize(void *payload, const char *b
 bool tree_sitter_vyper_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols) {
   Scanner *scanner = (Scanner *)payload;
 
-  // Handle pending dedents first
-  if (scanner->pending_dedents > 0) {
-    if (!valid_symbols[DEDENT]) {
-      return false;
-    }
-    scanner->pending_dedents--;
-    pop_indent(scanner);
-    lexer->result_symbol = DEDENT;
+  if (emit_pending_dedent(scanner, valid_symbols, lexer)) {
     return true;
   }
 
   if (lexer->get_column(lexer) == 0) {
-    while (true) {
-      uint32_t indent = count_indent(lexer);
-
-      if (lexer->lookahead == '\r') {
-        lexer->advance(lexer, true);
-        continue;
-      }
-
-      if (lexer->lookahead == '#') {
-        skip_comment_line(lexer);
-        if (lexer->lookahead == '\n') {
-          if (valid_symbols[NEWLINE]) {
-            lexer->advance(lexer, true);
-            lexer->mark_end(lexer);
-            lexer->result_symbol = NEWLINE;
-            return true;
-          }
-          return false;
-        }
-        if (lexer->lookahead == 0) {
-          break;
-        }
-      }
-
-      if (lexer->lookahead == '\n') {
-        if (valid_symbols[NEWLINE]) {
-          lexer->advance(lexer, true);
-          lexer->mark_end(lexer);
-          lexer->result_symbol = NEWLINE;
-          return true;
-        }
-        return false;
-      }
-
-      if (lexer->lookahead == 0) {
-        break;
-      }
-
-      // Continuation lines that only close a surrounding delimiter should not
-      // participate in indentation handling.
-      if (lexer->lookahead == ')' || lexer->lookahead == ']' || lexer->lookahead == '}') {
-        return false;
-      }
-
-      uint32_t current_indent = top_indent(scanner);
-      if (indent > current_indent) {
-        if (valid_symbols[INDENT]) {
-          push_indent(scanner, indent);
-          lexer->result_symbol = INDENT;
-          return true;
-        }
-        return false;
-      }
-
-      if (indent < current_indent) {
-        if (!valid_symbols[DEDENT]) {
-          return false;
-        }
-
-        uint32_t dedents = 0;
-        while (scanner->count - dedents > 1 && scanner->indents[scanner->count - dedents - 1] > indent) {
-          dedents++;
-        }
-
-        if (dedents > 0) {
-          scanner->pending_dedents = dedents - 1;
-          pop_indent(scanner);
-          lexer->result_symbol = DEDENT;
-          return true;
-        }
-      }
-
-      return false;
+    if (scan_beginning_of_line(scanner, lexer, valid_symbols)) {
+      return true;
     }
   }
 
@@ -261,7 +296,7 @@ bool tree_sitter_vyper_external_scanner_scan(void *payload, TSLexer *lexer, cons
     return emit_line_break_token(lexer, valid_symbols);
   }
 
-  while (lexer->lookahead == ' ' || lexer->lookahead == '\t' || lexer->lookahead == '\f' || lexer->lookahead == '\r') {
+  while (is_horizontal_whitespace(lexer->lookahead)) {
     lexer->advance(lexer, true);
   }
 
@@ -269,15 +304,5 @@ bool tree_sitter_vyper_external_scanner_scan(void *payload, TSLexer *lexer, cons
     return emit_line_break_token(lexer, valid_symbols);
   }
 
-  // Handle end of file - emit remaining dedents only.
-  if (lexer->lookahead == 0) {
-    if (scanner->count > 1 && valid_symbols[DEDENT]) {
-      pop_indent(scanner);
-      lexer->result_symbol = DEDENT;
-      return true;
-    }
-    return false;
-  }
-
-  return false;
+  return emit_eof_dedent(scanner, valid_symbols, lexer);
 }

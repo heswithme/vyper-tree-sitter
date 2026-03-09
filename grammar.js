@@ -42,7 +42,7 @@ const multilineCommaSeparatedWithSoftBreaks = ($, itemRule) => seq(
   itemRule,
   repeat(seq(",", repeat($.soft_line_break), itemRule)),
   optional(seq(",", repeat($.soft_line_break))),
-  softBreakTail($),
+  repeat($.soft_line_break),
 );
 
 module.exports = grammar({
