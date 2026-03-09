@@ -12,6 +12,39 @@ const {
   DOCSTRING_CHUNK_SINGLE_PATTERNS,
 } = require("./grammar/tokens");
 
+const softBreakTail = $ => seq(
+  repeat($.soft_line_break),
+  optional($.soft_line_break_end),
+);
+
+const declarationBody = ($, memberRule) => seq(
+  $._newline,
+  repeat($._newline),
+  $._indent,
+  repeat1(choice(memberRule, $._newline)),
+  $._dedent,
+);
+
+const bareIdentifierLine = $ => seq(
+  $.identifier,
+  optional($.comment),
+  $._newline,
+);
+
+const commaSeparatedWithSoftBreaks = ($, itemRule) => seq(
+  itemRule,
+  repeat(seq(",", repeat($.soft_line_break), itemRule)),
+  optional(seq(",", repeat($.soft_line_break))),
+);
+
+const multilineCommaSeparatedWithSoftBreaks = ($, itemRule) => seq(
+  repeat1($.soft_line_break),
+  itemRule,
+  repeat(seq(",", repeat($.soft_line_break), itemRule)),
+  optional(seq(",", repeat($.soft_line_break))),
+  softBreakTail($),
+);
+
 module.exports = grammar({
   name: "vyper",
 
@@ -151,38 +184,30 @@ module.exports = grammar({
       "struct",
       field("name", $.identifier),
       ":",
-      $._newline,
-      repeat($._newline),
-      $._indent,
-      repeat1(choice($.struct_member, $._newline)),
-      $._dedent,
+      declarationBody($, $.struct_member),
     ),
 
-struct_member: $ => seq(
-  field("name", $.identifier),
-  ":",
-  field("type", $.type),
-  $._newline,
-),
+    struct_member: $ => seq(
+      field("name", $.identifier),
+      ":",
+      field("type", $.type),
+      $._newline,
+    ),
 
 
     interface_declaration: $ => seq(
       "interface",
       field("name", $.identifier),
       ":",
-      $._newline,
-      repeat($._newline),
-      $._indent,
-      repeat1(choice($.interface_member, $._newline)),
-      $._dedent,
+      declarationBody($, $.interface_member),
     ),
 
-interface_member: $ => seq(
-  $.function_signature,
-  ":",
-  $.mutability,
-  $._newline,
-),
+    interface_member: $ => seq(
+      $.function_signature,
+      ":",
+      $.mutability,
+      $._newline,
+    ),
 
 
     event_declaration: $ => seq(
@@ -191,22 +216,16 @@ interface_member: $ => seq(
       ":",
       choice(
         seq("pass", $._newline),
-        seq(
-          $._newline,
-          repeat($._newline),
-          $._indent,
-          repeat1(choice($.event_member, $.pass_statement, $._newline)),
-          $._dedent,
-        ),
+        declarationBody($, choice($.event_member, $.pass_statement)),
       ),
     ),
 
-event_member: $ => seq(
-  field("name", $.identifier),
-  ":",
-  field("type", choice($.indexed_type, $.type)),
-  $._newline,
-),
+    event_member: $ => seq(
+      field("name", $.identifier),
+      ":",
+      field("type", choice($.indexed_type, $.type)),
+      $._newline,
+    ),
 
 
     indexed_type: $ => seq(
@@ -220,22 +239,14 @@ event_member: $ => seq(
       "flag",
       field("name", $.identifier),
       ":",
-      $._newline,
-      repeat($._newline),
-      $._indent,
-      repeat1(choice(seq($.identifier, optional($.comment), $._newline), $._newline)),
-      $._dedent,
+      declarationBody($, bareIdentifierLine($)),
     ),
 
     enum_declaration: $ => seq(
       "enum",
       field("name", $.identifier),
       ":",
-      $._newline,
-      repeat($._newline),
-      $._indent,
-      repeat1(choice(seq($.identifier, optional($.comment), $._newline), $._newline)),
-      $._dedent,
+      declarationBody($, bareIdentifierLine($)),
     ),
 
     implements_statement: $ => seq(
@@ -271,8 +282,7 @@ event_member: $ => seq(
       $.module_binding,
       repeat(seq(optional($.soft_line_break), ",", optional($.soft_line_break), $.module_binding)),
       optional(seq(optional($.soft_line_break), ",")),
-      repeat($.soft_line_break),
-      optional($.soft_line_break_end),
+      softBreakTail($),
     ),
 
     module_binding: $ => seq(
@@ -308,8 +318,7 @@ event_member: $ => seq(
       "(",
       optional($.soft_line_break),
       $.type,
-      repeat($.soft_line_break),
-      optional($.soft_line_break_end),
+      softBreakTail($),
       ")",
     ),
 
@@ -318,8 +327,7 @@ event_member: $ => seq(
       "(",
       optional($.soft_line_break),
       field("value", choice($.variable_annotation, $.type)),
-      repeat($.soft_line_break),
-      optional($.soft_line_break_end),
+      softBreakTail($),
       ")",
     ),
 
@@ -349,18 +357,8 @@ event_member: $ => seq(
     ),
 
     parameter_list: $ => prec.right(choice(
-      seq(
-        $.parameter,
-        repeat(seq(",", repeat($.soft_line_break), $.parameter)),
-        optional(seq(",", repeat($.soft_line_break))),
-      ),
-      seq(
-        repeat1($.soft_line_break),
-        $.parameter,
-        repeat(seq(",", repeat($.soft_line_break), $.parameter)),
-        optional(seq(",", repeat($.soft_line_break))),
-        repeat($.soft_line_break),
-      ),
+      commaSeparatedWithSoftBreaks($, $.parameter),
+      multilineCommaSeparatedWithSoftBreaks($, $.parameter),
     )),
 
     decorator: $ => seq(
@@ -371,16 +369,6 @@ event_member: $ => seq(
     ),
 
     parameter: $ => seq(
-      field("name", $.identifier),
-      ":",
-      field("type", $.type),
-      optional(seq(
-        "=",
-        field("default", $.expression),
-      )),
-    ),
-
-    multiline_parameter: $ => seq(
       field("name", $.identifier),
       ":",
       field("type", $.type),
@@ -545,18 +533,8 @@ event_member: $ => seq(
     ),
 
     argument_list: $ => prec.right(choice(
-      seq(
-        $.argument,
-        repeat(seq(",", repeat($.soft_line_break), $.argument)),
-        optional(seq(",", repeat($.soft_line_break))),
-      ),
-      seq(
-        repeat1($.soft_line_break),
-        $.argument,
-        repeat(seq(",", repeat($.soft_line_break), $.argument)),
-        optional(seq(",", repeat($.soft_line_break))),
-        repeat($.soft_line_break),
-      ),
+      commaSeparatedWithSoftBreaks($, $.argument),
+      multilineCommaSeparatedWithSoftBreaks($, $.argument),
     )),
 
     expression: $ => choice(
@@ -598,8 +576,7 @@ event_member: $ => seq(
         "(",
         repeat1($.soft_line_break),
         choice($.wrapped_binary_expression, $.expression),
-        repeat($.soft_line_break),
-        optional($.soft_line_break_end),
+        softBreakTail($),
         ")",
       ),
     ),
@@ -697,14 +674,12 @@ event_member: $ => seq(
       )),
     ),
 
-    call: $ => prec(PREC.call, choice(
-      seq(
-        field("function", $.atom_expression),
-        "(",
-        optional($.argument_list),
-        optional($.soft_line_break_end),
-        ")",
-      ),
+    call: $ => prec(PREC.call, seq(
+      field("function", $.atom_expression),
+      "(",
+      optional($.argument_list),
+      optional($.soft_line_break_end),
+      ")",
     )),
 
     external_call: $ => prec(PREC.unary, seq(
@@ -738,8 +713,7 @@ event_member: $ => seq(
       $.expression,
       repeat(seq(optional($.soft_line_break), ",", optional($.soft_line_break), $.expression)),
       optional(seq(optional($.soft_line_break), ",")),
-      repeat($.soft_line_break),
-      optional($.soft_line_break_end),
+      softBreakTail($),
       ")",
     ),
 
@@ -756,8 +730,7 @@ event_member: $ => seq(
         $.expression,
         repeat(seq(optional($.soft_line_break), ",", optional($.soft_line_break), $.expression)),
         optional(seq(optional($.soft_line_break), ",")),
-        repeat($.soft_line_break),
-        optional($.soft_line_break_end),
+        softBreakTail($),
         "]",
       ),
     ),
@@ -775,8 +748,7 @@ event_member: $ => seq(
         $.dict_pair,
         repeat(seq(optional($.soft_line_break), ",", repeat($.soft_line_break), $.dict_pair)),
         optional(seq(optional($.soft_line_break), ",")),
-        repeat($.soft_line_break),
-        optional($.soft_line_break_end),
+        softBreakTail($),
         "}",
       ),
     ),
@@ -836,8 +808,7 @@ event_member: $ => seq(
       "(",
       optional($.soft_line_break),
       $.type,
-      repeat($.soft_line_break),
-      optional($.soft_line_break_end),
+      softBreakTail($),
       ")",
     ),
 
@@ -851,8 +822,7 @@ event_member: $ => seq(
       repeat($.soft_line_break),
       $.type,
       repeat(seq(repeat($.soft_line_break), ",", repeat($.soft_line_break), $.keyword_argument)),
-      repeat($.soft_line_break),
-      optional($.soft_line_break_end),
+      softBreakTail($),
       ")",
     ),
 
@@ -892,8 +862,7 @@ event_member: $ => seq(
             choice($.type, $.expression),
             repeat(seq(optional($.soft_line_break), ",", repeat($.soft_line_break), choice($.type, $.expression))),
             optional(seq(optional($.soft_line_break), ",")),
-            repeat($.soft_line_break),
-            optional($.soft_line_break_end),
+            softBreakTail($),
           ),
         ),
         "]",
@@ -921,8 +890,7 @@ event_member: $ => seq(
         $.type,
         repeat(seq(optional($.soft_line_break), ",", repeat($.soft_line_break), $.type)),
         optional(seq(optional($.soft_line_break), ",")),
-        repeat($.soft_line_break),
-        optional($.soft_line_break_end),
+        softBreakTail($),
         ")",
       ),
     ),
@@ -945,8 +913,7 @@ event_member: $ => seq(
         ",",
         repeat($.soft_line_break),
         $.expression,
-        repeat($.soft_line_break),
-        optional($.soft_line_break_end),
+        softBreakTail($),
         "]",
       ),
     )),
@@ -969,8 +936,7 @@ event_member: $ => seq(
         ",",
         repeat($.soft_line_break),
         $.type,
-        repeat($.soft_line_break),
-        optional($.soft_line_break_end),
+        softBreakTail($),
         "]",
       ),
     )),
@@ -982,8 +948,7 @@ event_member: $ => seq(
         "[",
         repeat1($.soft_line_break),
         $.expression,
-        repeat($.soft_line_break),
-        optional($.soft_line_break_end),
+        softBreakTail($),
         "]",
       ),
     )),
@@ -995,8 +960,7 @@ event_member: $ => seq(
         "[",
         repeat1($.soft_line_break),
         $.expression,
-        repeat($.soft_line_break),
-        optional($.soft_line_break_end),
+        softBreakTail($),
         "]",
       ),
     )),
@@ -1014,8 +978,7 @@ event_member: $ => seq(
           choice($.type, $.expression),
           repeat(seq(optional($.soft_line_break), ",", repeat($.soft_line_break), choice($.type, $.expression))),
           optional(seq(optional($.soft_line_break), ",")),
-          repeat($.soft_line_break),
-          optional($.soft_line_break_end),
+          softBreakTail($),
         ),
       ),
       "]",
