@@ -18,6 +18,7 @@ typedef struct {
   uint32_t count;
   uint32_t capacity;
   uint32_t pending_dedents;
+  bool emitted_eof_newline;
 } Scanner;
 
 static void push_indent(Scanner *scanner, uint32_t indent) {
@@ -198,6 +199,22 @@ static bool scan_beginning_of_line(Scanner *scanner, TSLexer *lexer, const bool 
   return false;
 }
 
+static bool emit_eof_newline(Scanner *scanner, const bool *valid_symbols, TSLexer *lexer) {
+  if (
+    lexer->lookahead != 0 ||
+    !valid_symbols[NEWLINE] ||
+    scanner->emitted_eof_newline ||
+    lexer->get_column(lexer) == 0
+  ) {
+    return false;
+  }
+
+  lexer->mark_end(lexer);
+  lexer->result_symbol = NEWLINE;
+  scanner->emitted_eof_newline = true;
+  return true;
+}
+
 static bool emit_eof_dedent(Scanner *scanner, const bool *valid_symbols, TSLexer *lexer) {
   if (lexer->lookahead == 0 && scanner->count > 1 && valid_symbols[DEDENT]) {
     pop_indent(scanner);
@@ -244,6 +261,10 @@ unsigned tree_sitter_vyper_external_scanner_serialize(void *payload, char *buffe
     size += sizeof(uint32_t);
   }
 
+  if (size + 1 <= TREE_SITTER_SERIALIZATION_BUFFER_SIZE) {
+    buffer[size++] = scanner->emitted_eof_newline ? 1 : 0;
+  }
+
   return size;
 }
 
@@ -251,6 +272,7 @@ void tree_sitter_vyper_external_scanner_deserialize(void *payload, const char *b
   Scanner *scanner = (Scanner *)payload;
   scanner->count = 0;
   scanner->pending_dedents = 0;
+  scanner->emitted_eof_newline = false;
 
   if (length < sizeof(uint32_t)) {
     push_indent(scanner, 0);
@@ -274,6 +296,10 @@ void tree_sitter_vyper_external_scanner_deserialize(void *payload, const char *b
     size += sizeof(uint32_t);
   }
 
+  if (size + 1 <= length) {
+    scanner->emitted_eof_newline = buffer[size] != 0;
+  }
+
   if (scanner->count == 0) {
     push_indent(scanner, 0);
   }
@@ -281,6 +307,10 @@ void tree_sitter_vyper_external_scanner_deserialize(void *payload, const char *b
 
 bool tree_sitter_vyper_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols) {
   Scanner *scanner = (Scanner *)payload;
+
+  if (lexer->lookahead != 0) {
+    scanner->emitted_eof_newline = false;
+  }
 
   if (emit_pending_dedent(scanner, valid_symbols, lexer)) {
     return true;
@@ -302,6 +332,10 @@ bool tree_sitter_vyper_external_scanner_scan(void *payload, TSLexer *lexer, cons
 
   if (lexer->lookahead == '\n') {
     return emit_line_break_token(lexer, valid_symbols);
+  }
+
+  if (emit_eof_newline(scanner, valid_symbols, lexer)) {
+    return true;
   }
 
   return emit_eof_dedent(scanner, valid_symbols, lexer);

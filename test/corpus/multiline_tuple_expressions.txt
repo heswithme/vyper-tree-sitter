@@ -1,0 +1,50 @@
+=========================
+Multiline tuple expressions
+=========================
+
+@external
+def f() -> (uint256, uint256):
+    return (
+        a,
+        b
+    )
+
+exports: (
+    # keep leading comments in exports tuples
+    foo.bar,
+    foo.baz,
+)
+
+---
+
+(source_file
+  (function_definition
+    (decorator
+      (identifier))
+    (function_signature
+      (identifier)
+      (tuple_type
+        (identifier)
+        (identifier)))
+    (block
+      (return_statement
+        (atom_expression
+          (atom
+            (tuple
+              (atom_expression
+                (identifier))
+              (atom_expression
+                (identifier))))))))
+  (exports_declaration
+    (tuple
+      (comment)
+      (atom_expression
+        (attribute
+          (atom_expression
+            (identifier))
+          (identifier)))
+      (atom_expression
+        (attribute
+          (atom_expression
+            (identifier))
+          (identifier))))))

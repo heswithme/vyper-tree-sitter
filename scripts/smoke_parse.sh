@@ -32,7 +32,7 @@ fi
 filtered_tmpfile="$(mktemp)"
 trap 'rm -f "$tmpfile" "$filtered_tmpfile"' EXIT
 
-grep -v '^../twocrypto-ng/contracts/twocrypto\.vy$' "$tmpfile" > "$filtered_tmpfile"
+grep -Ev '^../twocrypto-ng/contracts/twocrypto\.vy$|^../twocrypto-ng copy/contracts/twocrypto\.vy$' "$tmpfile" > "$filtered_tmpfile"
 
 if ! [ -s "$filtered_tmpfile" ]; then
   echo "no parseable .vy/.vyi files found after exclusions" >&2

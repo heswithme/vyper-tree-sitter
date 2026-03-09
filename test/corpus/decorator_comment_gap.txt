@@ -1,0 +1,19 @@
+=========================
+Decorator comment gap
+=========================
+
+@internal
+# comment between decorator and function signature
+def f():
+    pass
+
+---
+
+(source_file
+  (function_definition
+    (decorator
+      (identifier))
+    (function_signature
+      (identifier))
+    (block
+      (pass_statement))))

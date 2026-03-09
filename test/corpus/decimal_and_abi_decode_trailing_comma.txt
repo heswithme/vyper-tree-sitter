@@ -1,0 +1,67 @@
+=========================
+Decimal literals and trailing abi_decode comma
+=========================
+
+@external
+def f(data: Bytes[32]):
+    decoded = abi_decode(
+        data,
+        (address, uint256),
+    )
+    send(msg.sender, as_wei_value(0.5, "ether"))
+
+---
+
+(source_file
+  (function_definition
+    (decorator
+      (identifier))
+    (function_signature
+      (identifier)
+      (parameter_list
+        (parameter
+          (identifier)
+          (bytes_type
+            (atom_expression
+              (atom
+                (integer)))))))
+    (block
+      (assignment
+        (atom_expression
+          (identifier))
+        (atom_expression
+          (atom
+            (special_builtin
+              (abi_decode_builtin
+                (argument
+                  (atom_expression
+                    (identifier)))
+                (tuple_type
+                  (identifier)
+                  (identifier)))))))
+      (expression_statement
+        (atom_expression
+          (call
+            (atom_expression
+              (identifier))
+            (argument_list
+              (argument
+                (atom_expression
+                  (attribute
+                    (atom_expression
+                      (identifier))
+                    (identifier))))
+              (argument
+                (atom_expression
+                  (call
+                    (atom_expression
+                      (identifier))
+                    (argument_list
+                      (argument
+                        (atom_expression
+                          (atom
+                            (decimal))))
+                      (argument
+                        (atom_expression
+                          (atom
+                            (string)))))))))))))))

@@ -44,14 +44,29 @@ Current corpus coverage includes:
 - interfaces, `implements`, and `exports`
 - advanced type syntax including `DynArray[...]` and nested `HashMap[...]`
 - postfix array suffixes on explicit types and inline conditional expressions
+- decimal literals and trailing-comma `abi_decode(...)` forms
 - `extcall` / `staticcall`
 - multiline closer-line calls and multiline `log Foo(...)`
+- multiline tuple expressions and comment-bearing multiline `exports: (...)`
 - nested control flow with typed `for` targets, `raise`, `continue`, and `break`
 - list and tuple literals, `empty(...)`, `abi_decode(...)`, and `in` / `not in`
 - deprecated `enum`, empty event bodies, and imported type references like `foo.Bar`
 - module and function docstrings
 
-Reference smoke set:
+Official sibling smoke sweep:
+
+- all `../*/contracts/*.vy` sibling files
+- excluding the intentionally incomplete placeholders:
+  - `../twocrypto-ng/contracts/twocrypto.vy`
+  - `../twocrypto-ng copy/contracts/twocrypto.vy`
+
+Run it with:
+
+```bash
+bash scripts/smoke_siblings.sh
+```
+
+Curated reference smoke set:
 
 - `../blockhash-oracle`
 - `../LZV2Vyper`

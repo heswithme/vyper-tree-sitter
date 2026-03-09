@@ -1,0 +1,42 @@
+=========================
+Multiline subscript
+=========================
+
+@internal
+def f(target: address, key: address):
+    if target in self.path_map[
+        key
+    ]:
+        pass
+
+---
+
+(source_file
+  (function_definition
+    (decorator
+      (identifier))
+    (function_signature
+      (identifier)
+      (parameter_list
+        (parameter
+          (identifier)
+          (identifier))
+        (parameter
+          (identifier)
+          (identifier))))
+    (block
+      (if_statement
+        (binary_expression
+          (atom_expression
+            (identifier))
+          (atom_expression
+            (subscript
+              (atom_expression
+                (attribute
+                  (atom_expression
+                    (identifier))
+                  (identifier)))
+              (atom_expression
+                (identifier)))))
+        (block
+          (pass_statement))))))

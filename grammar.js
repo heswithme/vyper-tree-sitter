@@ -45,6 +45,14 @@ const multilineCommaSeparatedWithSoftBreaks = ($, itemRule) => seq(
   repeat($._soft_line_break),
 );
 
+const multilineExpressionSequence = $ => seq(
+  repeat1($._soft_line_break),
+  $.expression,
+  repeat(seq(repeat($._soft_line_break), ",", repeat($._soft_line_break), $.expression)),
+  optional(seq(repeat($._soft_line_break), ",")),
+  softBreakTail($),
+);
+
 module.exports = grammar({
   name: "vyper",
 
@@ -340,7 +348,7 @@ module.exports = grammar({
     ),
 
     function_definition: $ => seq(
-      repeat($.decorator),
+      repeat(seq($.decorator, repeat($._newline))),
       $.function_signature,
       ":",
       $.block,
@@ -696,7 +704,14 @@ module.exports = grammar({
     subscript: $ => prec.left(PREC.attribute, seq(
       field("value", choice($.atom_expression, $.list)),
       "[",
-      field("index", $.expression),
+      choice(
+        field("index", $.expression),
+        seq(
+          repeat1($._soft_line_break),
+          field("index", $.expression),
+          softBreakTail($),
+        ),
+      ),
       "]",
     )),
 
@@ -709,11 +724,7 @@ module.exports = grammar({
 
     multiline_tuple: $ => seq(
       "(",
-      optional($._soft_line_break),
-      $.expression,
-      repeat(seq(optional($._soft_line_break), ",", optional($._soft_line_break), $.expression)),
-      optional(seq(optional($._soft_line_break), ",")),
-      softBreakTail($),
+      multilineExpressionSequence($),
       ")",
     ),
 
@@ -768,12 +779,14 @@ module.exports = grammar({
     ),
 
     atom: $ => choice(
+      $.decimal,
       $.integer,
       $.string,
       $.boolean,
       $.ellipsis,
       $.list,
       $.tuple,
+      alias($.multiline_tuple, $.tuple),
       $.dict,
       $.special_builtin,
       $.parenthesized_expression,
@@ -822,6 +835,7 @@ module.exports = grammar({
       repeat($._soft_line_break),
       $.type,
       repeat(seq(repeat($._soft_line_break), ",", repeat($._soft_line_break), $.keyword_argument)),
+      optional(seq(repeat($._soft_line_break), ",")),
       softBreakTail($),
       ")",
     ),
@@ -987,6 +1001,7 @@ module.exports = grammar({
     comment: _ => token(prec(-1, seq("#", /.*/))),
     line_continuation: _ => token(seq("\\", /\r?\n/)),
     identifier: _ => /[A-Za-z_][A-Za-z0-9_]*/,
+    decimal: _ => token(/\d[\d_]*\.\d[\d_]*/),
     integer: _ => token(choice(
       /0[xX][0-9A-Fa-f_]+/,
       /0[bB][01_]+/,
