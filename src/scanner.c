@@ -9,6 +9,8 @@ enum TokenType {
   NEWLINE,
   INDENT,
   DEDENT,
+  SOFT_NEWLINE,
+  SOFT_NEWLINE_END,
 };
 
 typedef struct {
@@ -54,6 +56,43 @@ static void skip_comment_line(TSLexer *lexer) {
   while (lexer->lookahead != '\n' && lexer->lookahead != 0) {
     lexer->advance(lexer, true);
   }
+}
+
+static bool emit_line_break_token(TSLexer *lexer, const bool *valid_symbols) {
+  bool wants_soft = valid_symbols[SOFT_NEWLINE] || valid_symbols[SOFT_NEWLINE_END];
+  bool wants_newline = valid_symbols[NEWLINE];
+
+  if (!wants_soft && !wants_newline) {
+    return false;
+  }
+
+  lexer->advance(lexer, true);
+
+  if (wants_soft) {
+    while (lexer->lookahead == ' ' || lexer->lookahead == '\t' || lexer->lookahead == '\f' || lexer->lookahead == '\r') {
+      lexer->advance(lexer, true);
+    }
+
+    lexer->mark_end(lexer);
+
+    if ((lexer->lookahead == ')' || lexer->lookahead == ']' || lexer->lookahead == '}') && valid_symbols[SOFT_NEWLINE_END]) {
+      lexer->result_symbol = SOFT_NEWLINE_END;
+      return true;
+    }
+
+    if (valid_symbols[SOFT_NEWLINE]) {
+      lexer->result_symbol = SOFT_NEWLINE;
+      return true;
+    }
+  }
+
+  if (!wants_newline) {
+    return false;
+  }
+
+  lexer->mark_end(lexer);
+  lexer->result_symbol = NEWLINE;
+  return true;
 }
 
 void *tree_sitter_vyper_external_scanner_create(void) {
@@ -219,18 +258,15 @@ bool tree_sitter_vyper_external_scanner_scan(void *payload, TSLexer *lexer, cons
   }
 
   if (lexer->lookahead == '\n') {
-    if (!valid_symbols[NEWLINE]) {
-      return false;
-    }
-
-    lexer->advance(lexer, true);
-    lexer->mark_end(lexer);
-    lexer->result_symbol = NEWLINE;
-    return true;
+    return emit_line_break_token(lexer, valid_symbols);
   }
 
   while (lexer->lookahead == ' ' || lexer->lookahead == '\t' || lexer->lookahead == '\f' || lexer->lookahead == '\r') {
     lexer->advance(lexer, true);
+  }
+
+  if (lexer->lookahead == '\n') {
+    return emit_line_break_token(lexer, valid_symbols);
   }
 
   // Handle end of file - emit remaining dedents only.

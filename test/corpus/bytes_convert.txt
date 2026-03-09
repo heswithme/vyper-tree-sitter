@@ -12,52 +12,6 @@ def newOptions() -> Bytes[MAX_OPTIONS_TOTAL_SIZE]:
     return options
 
 ---
-(source_file [0, 0] - [8, 0]
-  (function_definition [0, 0] - [8, 0]
-    (decorator [0, 0] - [1, 0]
-      name: (identifier [0, 1] - [0, 9]))
-    (function_signature [1, 0] - [1, 49]
-      name: (identifier [1, 4] - [1, 14])
-      return_type: (bytes_type [1, 20] - [1, 49]
-        (atom_expression [1, 26] - [1, 48]
-          (identifier [1, 26] - [1, 48]))))
-    (block [2, 0] - [8, 0]
-      (docstring_statement [2, 4] - [6, 0]
-        (docstring [2, 4] - [5, 7]
-          (docstring_newline [2, 7] - [3, 0])
-          (docstring_chunk_double [3, 0] - [3, 56])
-          (docstring_newline [3, 56] - [4, 0])
-          (docstring_chunk_double [4, 0] - [4, 56])
-          (docstring_newline [4, 56] - [5, 0])))
-      (state_variable_declaration [6, 4] - [7, 0]
-        name: (identifier [6, 4] - [6, 11])
-        type: (bytes_type [6, 13] - [6, 42]
-          (atom_expression [6, 19] - [6, 41]
-            (identifier [6, 19] - [6, 41])))
-        value: (atom_expression [6, 45] - [6, 81]
-          (call [6, 45] - [6, 81]
-            function: (atom_expression [6, 45] - [6, 51]
-              (identifier [6, 45] - [6, 51]))
-            (argument_list [6, 52] - [6, 80]
-              (argument [6, 52] - [6, 75]
-                (atom_expression [6, 52] - [6, 75]
-                  (call [6, 52] - [6, 75]
-                    function: (atom_expression [6, 52] - [6, 59]
-                      (identifier [6, 52] - [6, 59]))
-                    (argument_list [6, 60] - [6, 74]
-                      (argument [6, 60] - [6, 66]
-                        (atom_expression [6, 60] - [6, 66]
-                          (identifier [6, 60] - [6, 66])))
-                      (argument [6, 68] - [6, 74]
-                        (atom_expression [6, 68] - [6, 74]
-                          (identifier [6, 68] - [6, 74])))))))
-              (argument [6, 77] - [6, 80]
-                (atom_expression [6, 77] - [6, 80]
-                  (atom [6, 77] - [6, 80]
-                    (string [6, 77] - [6, 80]))))))))
-      (return_statement [7, 4] - [8, 0]
-        (atom_expression [7, 11] - [7, 18]
-          (identifier [7, 11] - [7, 18]))))))
 
 (source_file
   (function_definition
@@ -65,8 +19,7 @@ def newOptions() -> Bytes[MAX_OPTIONS_TOTAL_SIZE]:
       name: (identifier))
     (function_signature
       name: (identifier)
-      return_type: (subscripted_type
-        (identifier)
+      return_type: (bytes_type
         (atom_expression
           (identifier))))
     (block
@@ -79,8 +32,7 @@ def newOptions() -> Bytes[MAX_OPTIONS_TOTAL_SIZE]:
           (docstring_newline)))
       (state_variable_declaration
         name: (identifier)
-        type: (subscripted_type
-          (identifier)
+        type: (bytes_type
           (atom_expression
             (identifier)))
         value: (atom_expression

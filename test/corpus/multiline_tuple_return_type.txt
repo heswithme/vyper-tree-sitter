@@ -12,57 +12,20 @@ def prep(swap: address) -> (
     return self._prep(swap)
 
 ---
-(source_file [0, 0] - [8, 0]
-  (function_definition [0, 0] - [8, 0]
-    (decorator [0, 0] - [1, 0]
-      name: (identifier [0, 1] - [0, 9]))
-    (decorator [1, 0] - [2, 0]
-      name: (identifier [1, 1] - [1, 5]))
-    (function_signature [2, 0] - [6, 1]
-      name: (identifier [2, 4] - [2, 8])
-      (parameter_list [2, 9] - [2, 22]
-        (parameter [2, 9] - [2, 22]
-          name: (identifier [2, 9] - [2, 13])
-          type: (identifier [2, 15] - [2, 22])))
-      return_type: (tuple_type [2, 27] - [6, 1]
-        (soft_line_break [3, 0] - [3, 0])
-        (subscripted_type [3, 4] - [3, 14]
-          (identifier [3, 4] - [3, 11])
-          (atom_expression [3, 12] - [3, 13]
-            (atom [3, 12] - [3, 13]
-              (integer [3, 12] - [3, 13]))))
-        (soft_line_break [4, 0] - [4, 0])
-        (identifier [4, 4] - [4, 11])
-        (soft_line_break [5, 0] - [5, 0])
-        (identifier [5, 4] - [5, 11])
-        (soft_line_break [6, 0] - [6, 0])))
-    (block [7, 0] - [8, 0]
-      (return_statement [7, 4] - [8, 0]
-        (atom_expression [7, 11] - [7, 27]
-          (call [7, 11] - [7, 27]
-            function: (atom_expression [7, 11] - [7, 21]
-              (attribute [7, 11] - [7, 21]
-                value: (atom_expression [7, 11] - [7, 15]
-                  (identifier [7, 11] - [7, 15]))
-                attribute: (identifier [7, 16] - [7, 21])))
-            (argument_list [7, 22] - [7, 26]
-              (argument [7, 22] - [7, 26]
-                (atom_expression [7, 22] - [7, 26]
-                  (identifier [7, 22] - [7, 26]))))))))))
 
 (source_file
   (function_definition
     (decorator
-      (identifier))
+      name: (identifier))
     (decorator
-      (identifier))
+      name: (identifier))
     (function_signature
-      (identifier)
+      name: (identifier)
       (parameter_list
         (parameter
-          (identifier)
-          (identifier)))
-      (tuple_type
+          name: (identifier)
+          type: (identifier)))
+      return_type: (tuple_type
         (soft_line_break)
         (subscripted_type
           (identifier)
@@ -73,16 +36,16 @@ def prep(swap: address) -> (
         (identifier)
         (soft_line_break)
         (identifier)
-        (soft_line_break)))
+        (soft_line_break_end)))
     (block
       (return_statement
         (atom_expression
           (call
-            (atom_expression
+            function: (atom_expression
               (attribute
-                (atom_expression
+                value: (atom_expression
                   (identifier))
-                (identifier)))
+                attribute: (identifier)))
             (argument_list
               (argument
                 (atom_expression

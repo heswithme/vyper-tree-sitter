@@ -10,114 +10,59 @@ def demo():
     )
 
 ---
-(source_file [0, 0] - [6, 0]
-  (function_definition [0, 0] - [6, 0]
-    (decorator [0, 0] - [1, 0]
-      name: (identifier [0, 1] - [0, 9]))
-    (function_signature [1, 0] - [1, 10]
-      name: (identifier [1, 4] - [1, 8]))
-    (block [2, 0] - [6, 0]
-      (assignment [2, 4] - [6, 0]
-        left: (atom_expression [2, 4] - [2, 25]
-          (attribute [2, 4] - [2, 25]
-            value: (atom_expression [2, 4] - [2, 8]
-              (identifier [2, 4] - [2, 8]))
-            attribute: (identifier [2, 9] - [2, 25])))
-        right: (atom_expression [2, 28] - [5, 5]
-          (atom [2, 28] - [5, 5]
-            (parenthesized_expression [2, 28] - [5, 5]
-              (soft_line_break [3, 0] - [3, 0])
-              (wrapped_binary_expression [3, 8] - [4, 38]
-                left: (atom_expression [3, 8] - [3, 61]
-                  (atom [3, 8] - [3, 61]
-                    (parenthesized_expression [3, 8] - [3, 61]
-                      (binary_expression [3, 9] - [3, 60]
-                        left: (external_call [3, 9] - [3, 53]
-                          value: (atom_expression [3, 17] - [3, 53]
-                            (call [3, 17] - [3, 53]
-                              function: (atom_expression [3, 17] - [3, 51]
-                                (attribute [3, 17] - [3, 51]
-                                  value: (atom_expression [3, 17] - [3, 27]
-                                    (call [3, 17] - [3, 27]
-                                      function: (atom_expression [3, 17] - [3, 22]
-                                        (identifier [3, 17] - [3, 22]))
-                                      (argument_list [3, 23] - [3, 26]
-                                        (argument [3, 23] - [3, 26]
-                                          (atom_expression [3, 23] - [3, 26]
-                                            (identifier [3, 23] - [3, 26]))))))
-                                  attribute: (identifier [3, 28] - [3, 51]))))))
-                        right: (atom_expression [3, 57] - [3, 60]
-                          (atom [3, 57] - [3, 60]
-                            (integer [3, 57] - [3, 60])))))))
-                (soft_line_break [4, 0] - [4, 0])
-                right: (external_call [4, 10] - [4, 38]
-                  value: (atom_expression [4, 21] - [4, 38]
-                    (call [4, 21] - [4, 38]
-                      function: (atom_expression [4, 21] - [4, 36]
-                        (attribute [4, 21] - [4, 36]
-                          value: (atom_expression [4, 21] - [4, 31]
-                            (call [4, 21] - [4, 31]
-                              function: (atom_expression [4, 21] - [4, 26]
-                                (identifier [4, 21] - [4, 26]))
-                              (argument_list [4, 27] - [4, 30]
-                                (argument [4, 27] - [4, 30]
-                                  (atom_expression [4, 27] - [4, 30]
-                                    (identifier [4, 27] - [4, 30]))))))
-                          attribute: (identifier [4, 32] - [4, 36])))))))
-              (soft_line_break [5, 0] - [5, 0]))))))))
 
 (source_file
   (function_definition
     (decorator
-      (identifier))
+      name: (identifier))
     (function_signature
-      (identifier))
+      name: (identifier))
     (block
       (assignment
-        (atom_expression
+        left: (atom_expression
           (attribute
-            (atom_expression
+            value: (atom_expression
               (identifier))
-            (identifier)))
-        (atom_expression
+            attribute: (identifier)))
+        right: (atom_expression
           (atom
             (parenthesized_expression
               (soft_line_break)
               (wrapped_binary_expression
-                (atom_expression
+                left: (atom_expression
                   (atom
                     (parenthesized_expression
                       (binary_expression
-                        (external_call
-                          (atom_expression
+                        left: (external_call
+                          value: (atom_expression
                             (call
-                              (atom_expression
+                              function: (atom_expression
                                 (attribute
-                                  (atom_expression
+                                  value: (atom_expression
                                     (call
-                                      (atom_expression
+                                      function: (atom_expression
                                         (identifier))
                                       (argument_list
                                         (argument
                                           (atom_expression
                                             (identifier))))))
-                                  (identifier))))))
-                        (atom_expression
+                                  attribute: (identifier))))))
+                        right: (atom_expression
                           (atom
                             (integer)))))))
                 (soft_line_break)
-                (external_call
-                  (atom_expression
+                right: (external_call
+                  value: (atom_expression
                     (call
-                      (atom_expression
+                      function: (atom_expression
                         (attribute
-                          (atom_expression
+                          value: (atom_expression
                             (call
-                              (atom_expression
+                              function: (atom_expression
                                 (identifier))
                               (argument_list
                                 (argument
                                   (atom_expression
                                     (identifier))))))
-                          (identifier)))))))
-              (soft_line_break))))))))
+                          attribute: (identifier)))))))
+              (soft_line_break_end))))))))

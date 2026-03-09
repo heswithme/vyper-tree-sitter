@@ -9,58 +9,6 @@ def mint(receiver: address, value: uint256):
     log Transfer(msg.sender, receiver, value)
 
 ---
-(source_file [0, 0] - [5, 0]
-  (function_definition [0, 0] - [5, 0]
-    (decorator [0, 0] - [1, 0]
-      name: (identifier [0, 1] - [0, 9]))
-    (function_signature [1, 0] - [1, 43]
-      name: (identifier [1, 4] - [1, 8])
-      (parameter_list [1, 9] - [1, 42]
-        (parameter [1, 9] - [1, 26]
-          name: (identifier [1, 9] - [1, 17])
-          type: (identifier [1, 19] - [1, 26]))
-        (parameter [1, 28] - [1, 42]
-          name: (identifier [1, 28] - [1, 33])
-          type: (identifier [1, 35] - [1, 42]))))
-    (block [2, 0] - [5, 0]
-      (assert_statement [2, 4] - [3, 0]
-        (binary_expression [2, 11] - [2, 35]
-          left: (atom_expression [2, 11] - [2, 21]
-            (attribute [2, 11] - [2, 21]
-              value: (atom_expression [2, 11] - [2, 14]
-                (identifier [2, 11] - [2, 14]))
-              attribute: (identifier [2, 15] - [2, 21])))
-          right: (atom_expression [2, 25] - [2, 35]
-            (attribute [2, 25] - [2, 35]
-              value: (atom_expression [2, 25] - [2, 29]
-                (identifier [2, 25] - [2, 29]))
-              attribute: (identifier [2, 30] - [2, 35]))))
-        (atom_expression [2, 37] - [2, 48]
-          (atom [2, 37] - [2, 48]
-            (string [2, 37] - [2, 48]))))
-      (augmented_assignment [3, 4] - [4, 0]
-        left: (atom_expression [3, 4] - [3, 21]
-          (attribute [3, 4] - [3, 21]
-            value: (atom_expression [3, 4] - [3, 8]
-              (identifier [3, 4] - [3, 8]))
-            attribute: (identifier [3, 9] - [3, 21])))
-        right: (atom_expression [3, 25] - [3, 30]
-          (identifier [3, 25] - [3, 30])))
-      (log_statement [4, 4] - [5, 0]
-        (identifier [4, 8] - [4, 16])
-        (argument_list [4, 17] - [4, 44]
-          (argument [4, 17] - [4, 27]
-            (atom_expression [4, 17] - [4, 27]
-              (attribute [4, 17] - [4, 27]
-                value: (atom_expression [4, 17] - [4, 20]
-                  (identifier [4, 17] - [4, 20]))
-                attribute: (identifier [4, 21] - [4, 27]))))
-          (argument [4, 29] - [4, 37]
-            (atom_expression [4, 29] - [4, 37]
-              (identifier [4, 29] - [4, 37])))
-          (argument [4, 39] - [4, 44]
-            (atom_expression [4, 39] - [4, 44]
-              (identifier [4, 39] - [4, 44]))))))))
 
 (source_file
   (function_definition

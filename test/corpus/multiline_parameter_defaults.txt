@@ -10,40 +10,6 @@ def get_blockhash(
     pass
 
 ---
-(source_file [0, 0] - [6, 0]
-  (function_definition [0, 0] - [6, 0]
-    (decorator [0, 0] - [1, 0]
-      name: (identifier [0, 1] - [0, 5]))
-    (decorator [1, 0] - [2, 0]
-      name: (identifier [1, 1] - [1, 9]))
-    (function_signature [2, 0] - [4, 23]
-      name: (identifier [2, 4] - [2, 17])
-      (parameter_list [3, 0] - [4, 0]
-        (soft_line_break [3, 0] - [3, 0])
-        (parameter [3, 4] - [3, 46]
-          name: (identifier [3, 4] - [3, 17])
-          type: (identifier [3, 19] - [3, 26])
-          default: (binary_expression [3, 29] - [3, 46]
-            left: (atom_expression [3, 29] - [3, 41]
-              (attribute [3, 29] - [3, 41]
-                value: (atom_expression [3, 29] - [3, 34]
-                  (identifier [3, 29] - [3, 34]))
-                attribute: (identifier [3, 35] - [3, 41])))
-            right: (atom_expression [3, 44] - [3, 46]
-              (atom [3, 44] - [3, 46]
-                (integer [3, 44] - [3, 46])))))
-        (parameter [3, 48] - [3, 76]
-          name: (identifier [3, 48] - [3, 62])
-          type: (identifier [3, 64] - [3, 68])
-          default: (atom_expression [3, 71] - [3, 76]
-            (atom [3, 71] - [3, 76]
-              (boolean [3, 71] - [3, 76]))))
-        (soft_line_break [4, 0] - [4, 0]))
-      return_type: (tuple_type [4, 5] - [4, 23]
-        (identifier [4, 6] - [4, 13])
-        (identifier [4, 15] - [4, 22])))
-    (block [5, 0] - [6, 0]
-      (pass_statement [5, 4] - [6, 0]))))
 
 (source_file
   (function_definition
@@ -72,8 +38,8 @@ def get_blockhash(
           type: (identifier)
           default: (atom_expression
             (atom
-              (boolean))))
-        (soft_line_break))
+              (boolean)))))
+      (soft_line_break_end)
       return_type: (tuple_type
         (identifier)
         (identifier)))

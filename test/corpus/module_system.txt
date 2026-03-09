@@ -20,67 +20,6 @@ exports: (
 )
 
 ---
-(source_file [1, 0] - [16, 0]
-  (module_docstring [1, 0] - [1, 17]
-    (docstring [1, 0] - [1, 17]
-      (docstring_chunk_double [1, 3] - [1, 14])))
-  (from_import_statement [3, 0] - [4, 0]
-    (relative_import_path [3, 5] - [3, 18]
-      (dotted_name [3, 5] - [3, 18]
-        (identifier [3, 5] - [3, 13])
-        (identifier [3, 14] - [3, 18])))
-    (import_list [3, 26] - [3, 33]
-      (import_item [3, 26] - [3, 33]
-        (dotted_name [3, 26] - [3, 33]
-          (identifier [3, 26] - [3, 33])))))
-  (initializes_statement [4, 0] - [5, 0]
-    value: (identifier [4, 13] - [4, 20]))
-  (exports_declaration [5, 0] - [9, 0]
-    (tuple [5, 9] - [8, 1]
-      (soft_line_break [6, 0] - [6, 0])
-      (atom_expression [6, 4] - [6, 17]
-        (attribute [6, 4] - [6, 17]
-          value: (atom_expression [6, 4] - [6, 11]
-            (identifier [6, 4] - [6, 11]))
-          attribute: (identifier [6, 12] - [6, 17])))
-      (soft_line_break [7, 0] - [7, 0])
-      (atom_expression [7, 4] - [7, 30]
-        (attribute [7, 4] - [7, 30]
-          value: (atom_expression [7, 4] - [7, 11]
-            (identifier [7, 4] - [7, 11]))
-          attribute: (identifier [7, 12] - [7, 30])))
-      (soft_line_break_end [8, 0] - [8, 0])))
-  (from_import_statement [10, 0] - [11, 0]
-    (relative_import_path [10, 5] - [10, 10]
-      (dotted_name [10, 7] - [10, 10]
-        (identifier [10, 7] - [10, 10])))
-    (import_list [10, 18] - [10, 22]
-      (import_item [10, 18] - [10, 22]
-        (dotted_name [10, 18] - [10, 22]
-          (identifier [10, 18] - [10, 22])))))
-  (initializes_statement [11, 0] - [12, 0]
-    value: (module_initialization [11, 13] - [11, 37]
-      module: (identifier [11, 13] - [11, 17])
-      (module_binding_list [11, 18] - [11, 36]
-        (module_binding [11, 18] - [11, 36]
-          name: (identifier [11, 18] - [11, 25])
-          value: (atom_expression [11, 29] - [11, 36]
-            (identifier [11, 29] - [11, 36]))))))
-  (exports_declaration [12, 0] - [16, 0]
-    (tuple [12, 9] - [15, 1]
-      (soft_line_break [13, 0] - [13, 0])
-      (atom_expression [13, 4] - [13, 17]
-        (attribute [13, 4] - [13, 17]
-          value: (atom_expression [13, 4] - [13, 8]
-            (identifier [13, 4] - [13, 8]))
-          attribute: (identifier [13, 9] - [13, 17])))
-      (soft_line_break [14, 0] - [14, 0])
-      (atom_expression [14, 4] - [14, 20]
-        (attribute [14, 4] - [14, 20]
-          value: (atom_expression [14, 4] - [14, 8]
-            (identifier [14, 4] - [14, 8]))
-          attribute: (identifier [14, 9] - [14, 20])))
-      (soft_line_break_end [15, 0] - [15, 0]))))
 
 (source_file
   (module_docstring
@@ -96,21 +35,21 @@ exports: (
         (dotted_name
           (identifier)))))
   (initializes_statement
-    (identifier))
+    value: (identifier))
   (exports_declaration
     (tuple
       (soft_line_break)
       (atom_expression
         (attribute
-          (atom_expression
+          value: (atom_expression
             (identifier))
-          (identifier)))
+          attribute: (identifier)))
       (soft_line_break)
       (atom_expression
         (attribute
-          (atom_expression
+          value: (atom_expression
             (identifier))
-          (identifier)))
+          attribute: (identifier)))
       (soft_line_break_end)))
   (from_import_statement
     (relative_import_path
@@ -121,25 +60,25 @@ exports: (
         (dotted_name
           (identifier)))))
   (initializes_statement
-    (module_initialization
-      (identifier)
+    value: (module_initialization
+      module: (identifier)
       (module_binding_list
         (module_binding
-          (identifier)
-          (atom_expression
+          name: (identifier)
+          value: (atom_expression
             (identifier))))))
   (exports_declaration
     (tuple
       (soft_line_break)
       (atom_expression
         (attribute
-          (atom_expression
+          value: (atom_expression
             (identifier))
-          (identifier)))
+          attribute: (identifier)))
       (soft_line_break)
       (atom_expression
         (attribute
-          (atom_expression
+          value: (atom_expression
             (identifier))
-          (identifier)))
+          attribute: (identifier)))
       (soft_line_break_end))))

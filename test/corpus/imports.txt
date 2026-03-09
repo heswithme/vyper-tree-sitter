@@ -6,24 +6,6 @@ import foo as bar
 from .interfaces import ERC20, ERC721 as NFT
 
 ---
-(source_file [0, 0] - [2, 0]
-  (import_statement [0, 0] - [1, 0]
-    (import_item [0, 7] - [0, 17]
-      (dotted_name [0, 7] - [0, 10]
-        (identifier [0, 7] - [0, 10]))
-      (identifier [0, 14] - [0, 17])))
-  (from_import_statement [1, 0] - [2, 0]
-    (relative_import_path [1, 5] - [1, 16]
-      (dotted_name [1, 6] - [1, 16]
-        (identifier [1, 6] - [1, 16])))
-    (import_list [1, 24] - [1, 44]
-      (import_item [1, 24] - [1, 29]
-        (dotted_name [1, 24] - [1, 29]
-          (identifier [1, 24] - [1, 29])))
-      (import_item [1, 31] - [1, 44]
-        (dotted_name [1, 31] - [1, 37]
-          (identifier [1, 31] - [1, 37]))
-        (identifier [1, 41] - [1, 44])))))
 
 (source_file
   (import_statement
