@@ -1,0 +1,93 @@
+========================
+If Clause Comments
+========================
+
+@external
+def f(x: uint256, y: uint256, z: uint256):
+    if x > 0:
+        if y > 0:
+            z = 1
+        else:
+            z = 2
+
+    # comment before elif
+    elif z > 0:
+        z = 3
+
+    # comment before else
+    else:
+        z = 4
+
+---
+
+(source_file
+  (function_definition
+    (decorator
+      name: (identifier))
+    (function_signature
+      name: (identifier)
+      (parameter_list
+        (parameter
+          name: (identifier)
+          type: (identifier))
+        (parameter
+          name: (identifier)
+          type: (identifier))
+        (parameter
+          name: (identifier)
+          type: (identifier))))
+    (block
+      (if_statement
+        condition: (binary_expression
+          left: (atom_expression
+            (identifier))
+          right: (atom_expression
+            (atom
+              (integer))))
+        (block
+          (if_statement
+            condition: (binary_expression
+              left: (atom_expression
+                (identifier))
+              right: (atom_expression
+                (atom
+                  (integer))))
+            (block
+              (assignment
+                left: (atom_expression
+                  (identifier))
+                right: (atom_expression
+                  (atom
+                    (integer)))))
+            (else_clause
+              (block
+                (assignment
+                  left: (atom_expression
+                    (identifier))
+                  right: (atom_expression
+                    (atom
+                      (integer))))))))
+        (comment)
+        (elif_clause
+          condition: (binary_expression
+            left: (atom_expression
+              (identifier))
+            right: (atom_expression
+              (atom
+                (integer))))
+          (block
+            (assignment
+              left: (atom_expression
+                (identifier))
+              right: (atom_expression
+                (atom
+                  (integer))))))
+        (comment)
+        (else_clause
+          (block
+            (assignment
+              left: (atom_expression
+                (identifier))
+              right: (atom_expression
+                (atom
+                  (integer))))))))))

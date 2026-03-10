@@ -49,8 +49,8 @@ def trailing() -> decimal:
       (return_statement
         (atom_expression
           (atom
-            (string))))
-      (comment)))
+            (string))))))
+  (pragma_directive)
   (function_definition
     (decorator
       (identifier))
@@ -61,8 +61,8 @@ def trailing() -> decimal:
       (return_statement
         (atom_expression
           (atom
-            (decimal))))
-      (comment)))
+            (decimal))))))
+  (pragma_directive)
   (function_definition
     (decorator
       (identifier))
@@ -73,8 +73,8 @@ def trailing() -> decimal:
       (return_statement
         (atom_expression
           (atom
-            (decimal))))
-      (comment)))
+            (decimal))))))
+  (pragma_directive)
   (function_definition
     (decorator
       (identifier))

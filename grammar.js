@@ -90,6 +90,7 @@ module.exports = grammar({
     $._dedent,
     $._soft_line_break,
     $._soft_line_break_end,
+    $.comment,
   ],
 
   extras: $ => [
@@ -133,6 +134,7 @@ module.exports = grammar({
     [$.conditional_expression, $.walrus_expression],
     [$.call],
     [$.call, $.parenthesized_expression, $.multiline_tuple],
+    [$.if_statement],
   ],
 
   rules: {
@@ -577,8 +579,8 @@ module.exports = grammar({
       field("condition", $.expression),
       ":",
       $.block,
-      repeat($.elif_clause),
-      optional($.else_clause),
+      repeat(seq(repeat($._newline), $.elif_clause)),
+      optional(seq(repeat($._newline), $.else_clause)),
     ),
 
     elif_clause: $ => seq(
@@ -1123,7 +1125,6 @@ module.exports = grammar({
       "]",
     )),
 
-    comment: _ => token(prec(-1, /#(?!\s*(pragma|@version)\b).*/)),
     line_continuation: _ => token(seq("\\", /\r?\n/)),
     identifier: _ => /[A-Za-z_][A-Za-z0-9_]*/,
     decimal: _ => token(prec(2, choice(

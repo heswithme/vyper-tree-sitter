@@ -11,6 +11,7 @@ enum TokenType {
   DEDENT,
   SOFT_LINE_BREAK,
   SOFT_LINE_BREAK_END,
+  COMMENT,
 };
 
 typedef struct {
@@ -59,6 +60,50 @@ static bool is_horizontal_whitespace(int32_t lookahead) {
 
 static bool is_closing_delimiter(int32_t lookahead) {
   return lookahead == ')' || lookahead == ']' || lookahead == '}';
+}
+
+static bool consume_literal(TSLexer *lexer, const char *literal) {
+  for (size_t i = 0; literal[i] != '\0'; i++) {
+    if (lexer->lookahead != literal[i]) {
+      return false;
+    }
+    lexer->advance(lexer, false);
+  }
+  return true;
+}
+
+static bool scan_comment(TSLexer *lexer, bool consume_trailing_newline) {
+  if (lexer->lookahead != '#') {
+    return false;
+  }
+
+  lexer->advance(lexer, false);
+
+  while (is_horizontal_whitespace(lexer->lookahead)) {
+    lexer->advance(lexer, false);
+  }
+
+  if (lexer->lookahead == 'p') {
+    if (consume_literal(lexer, "pragma")) {
+      return false;
+    }
+  } else if (lexer->lookahead == '@') {
+    if (consume_literal(lexer, "@version")) {
+      return false;
+    }
+  }
+
+  while (lexer->lookahead != 0 && lexer->lookahead != '\n') {
+    lexer->advance(lexer, false);
+  }
+
+  if (consume_trailing_newline && lexer->lookahead == '\n') {
+    lexer->advance(lexer, false);
+  }
+
+  lexer->mark_end(lexer);
+  lexer->result_symbol = COMMENT;
+  return true;
 }
 
 static bool emit_newline(TSLexer *lexer) {
@@ -134,8 +179,35 @@ static bool scan_beginning_of_line(Scanner *scanner, TSLexer *lexer, const bool 
     }
 
     if (lexer->lookahead == '#') {
-      // Let comment-only lines lex as normal comment tokens. The parser will
-      // consume the comment as an extra, then come back for the newline token.
+      uint32_t current_indent = top_indent(scanner);
+
+      if (indent > current_indent) {
+        if (valid_symbols[INDENT]) {
+          push_indent(scanner, indent);
+          lexer->result_symbol = INDENT;
+          return true;
+        }
+        return false;
+      }
+
+      if (indent < current_indent) {
+        if (!valid_symbols[DEDENT]) {
+          return false;
+        }
+
+        uint32_t dedents = count_dedents(scanner, indent);
+        if (dedents > 0) {
+          scanner->pending_dedents = dedents - 1;
+          pop_indent(scanner);
+          lexer->result_symbol = DEDENT;
+          return true;
+        }
+      }
+
+      if (valid_symbols[COMMENT]) {
+        return scan_comment(lexer, true);
+      }
+
       return false;
     }
 
@@ -294,6 +366,7 @@ void tree_sitter_vyper_external_scanner_deserialize(void *payload, const char *b
 
 bool tree_sitter_vyper_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols) {
   Scanner *scanner = (Scanner *)payload;
+  bool at_beginning_of_line = lexer->get_column(lexer) == 0;
 
   if (lexer->lookahead != 0) {
     scanner->emitted_eof_newline = false;
@@ -303,7 +376,7 @@ bool tree_sitter_vyper_external_scanner_scan(void *payload, TSLexer *lexer, cons
     return true;
   }
 
-  if (lexer->get_column(lexer) == 0) {
+  if (at_beginning_of_line) {
     if (scan_beginning_of_line(scanner, lexer, valid_symbols)) {
       return true;
     }
@@ -315,6 +388,10 @@ bool tree_sitter_vyper_external_scanner_scan(void *payload, TSLexer *lexer, cons
 
   while (is_horizontal_whitespace(lexer->lookahead)) {
     lexer->advance(lexer, true);
+  }
+
+  if (!at_beginning_of_line && valid_symbols[COMMENT] && lexer->lookahead == '#') {
+    return scan_comment(lexer, false);
   }
 
   if (lexer->lookahead == '\n') {
