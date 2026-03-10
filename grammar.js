@@ -1123,7 +1123,7 @@ module.exports = grammar({
       "]",
     )),
 
-    comment: _ => token(prec(-1, seq("#", /.*/))),
+    comment: _ => token(prec(-1, /#(?!\s*(pragma|@version)\b).*/)),
     line_continuation: _ => token(seq("\\", /\r?\n/)),
     identifier: _ => /[A-Za-z_][A-Za-z0-9_]*/,
     decimal: _ => token(prec(2, choice(

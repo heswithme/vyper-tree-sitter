@@ -1,0 +1,61 @@
+=========================
+Standalone Comments
+=========================
+
+A: constant(uint256) = 1
+# banner comment between declarations
+B: constant(uint256) = 2
+
+@external
+def f(
+    x: uint256,  # trailing parameter comment
+    y: uint256,
+) -> uint256:
+    # first statement comment
+    assert x < y  # trailing statement comment
+    return x
+
+---
+
+(source_file
+  (constant_declaration
+    (identifier)
+    (constant_type
+      (identifier))
+    (atom_expression
+      (atom
+        (integer))))
+  (comment)
+  (constant_declaration
+    (identifier)
+    (constant_type
+      (identifier))
+    (atom_expression
+      (atom
+        (integer))))
+  (function_definition
+    (decorator
+      (identifier))
+    (function_signature
+      (identifier)
+      (parameter_list
+        (parameter
+          (identifier)
+          (identifier))
+        (comment)
+        (parameter
+          (identifier)
+          (identifier)))
+      (identifier))
+    (block
+      (comment)
+      (assert_statement
+        (binary_expression
+          (atom_expression
+            (identifier))
+          (atom_expression
+            (identifier)))
+        (comment))
+      (return_statement
+        (atom_expression
+          (identifier))))))

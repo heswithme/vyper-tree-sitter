@@ -53,12 +53,6 @@ static uint32_t count_indent(TSLexer *lexer) {
   return indent;
 }
 
-static void skip_comment_line(TSLexer *lexer) {
-  while (lexer->lookahead != '\n' && lexer->lookahead != 0) {
-    lexer->advance(lexer, true);
-  }
-}
-
 static bool is_horizontal_whitespace(int32_t lookahead) {
   return lookahead == ' ' || lookahead == '\t' || lookahead == '\f' || lookahead == '\r';
 }
@@ -140,16 +134,9 @@ static bool scan_beginning_of_line(Scanner *scanner, TSLexer *lexer, const bool 
     }
 
     if (lexer->lookahead == '#') {
-      skip_comment_line(lexer);
-      if (lexer->lookahead == '\n') {
-        if (valid_symbols[NEWLINE]) {
-          return emit_newline(lexer);
-        }
-        return false;
-      }
-      if (lexer->lookahead == 0) {
-        break;
-      }
+      // Let comment-only lines lex as normal comment tokens. The parser will
+      // consume the comment as an extra, then come back for the newline token.
+      return false;
     }
 
     if (lexer->lookahead == '\n') {

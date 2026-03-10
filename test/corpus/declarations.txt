@@ -25,6 +25,7 @@ def ping() -> uint256:
 ---
 
 (source_file
+  (pragma_directive)
   (state_variable_declaration
     name: (identifier)
     type: (variable_annotation

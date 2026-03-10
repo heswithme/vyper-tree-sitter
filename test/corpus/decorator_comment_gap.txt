@@ -13,6 +13,7 @@ def f():
   (function_definition
     (decorator
       (identifier))
+    (comment)
     (function_signature
       (identifier))
     (block

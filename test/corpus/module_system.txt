@@ -22,6 +22,7 @@ exports: (
 ---
 
 (source_file
+  (pragma_directive)
   (module_docstring
     (docstring
       (docstring_chunk_double)))
