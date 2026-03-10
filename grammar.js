@@ -47,12 +47,78 @@ const adjacentStringSegment = $ => choice(
   $.triple_quoted_string,
 );
 
+const BINARY_OPERATORS = [
+  ["or", PREC.or],
+  ["and", PREC.and],
+  ["in", PREC.compare],
+  ["==", PREC.compare],
+  ["!=", PREC.compare],
+  ["<", PREC.compare],
+  ["<=", PREC.compare],
+  [">", PREC.compare],
+  [">=", PREC.compare],
+  ["|", PREC.bitwise_or],
+  ["^", PREC.bitwise_xor],
+  ["&", PREC.bitwise_and],
+  ["<<", PREC.shift],
+  [">>", PREC.shift],
+  ["+", PREC.additive],
+  ["-", PREC.additive],
+  ["*", PREC.multiplicative],
+  ["//", PREC.multiplicative],
+  ["/", PREC.multiplicative],
+  ["%", PREC.multiplicative],
+];
+
 const continuedExpression = $ => choice(
   $.wrapped_binary_expression,
   $.wrapped_conditional_expression,
   $.wrapped_external_call,
   $.continued_adjacent_string,
   $.expression,
+);
+
+const binaryExpressionRules = ($, operandRule, withSoftBreaks = false) => {
+  const interstitial = withSoftBreaks ? [repeat($._soft_line_break)] : [];
+  return [
+    ...BINARY_OPERATORS.map(([operator, precedence]) =>
+      prec.left(precedence, seq(
+        field("left", operandRule),
+        ...interstitial,
+        field("operator", operator),
+        ...interstitial,
+        field("right", operandRule),
+      )),
+    ),
+    prec.right(PREC.power, seq(
+      field("left", operandRule),
+      ...interstitial,
+      field("operator", "**"),
+      ...interstitial,
+      field("right", operandRule),
+    )),
+    prec.left(PREC.compare, seq(
+      field("left", operandRule),
+      ...interstitial,
+      field("operator", seq("not", "in")),
+      ...interstitial,
+      field("right", operandRule),
+    )),
+  ];
+};
+
+const typeOrExpressionList = $ => choice(
+  seq(
+    commaSep1(choice($.type, $.expression)),
+    optional(","),
+  ),
+  seq(
+    repeat1($._soft_line_break),
+    choice($.type, $.expression),
+    repeat(seq(optional($._soft_line_break), ",", repeat($._soft_line_break), choice($.type, $.expression))),
+    optional(seq(optional($._soft_line_break), ",")),
+    softBreakTail($),
+  ),
 );
 
 const declarationBody = ($, memberRule) => seq(
@@ -142,32 +208,20 @@ module.exports = grammar({
   conflicts: $ => [
     [$.atom_expression, $.type],
     [$.atom_expression, $.type_call],
-    [$.atom_expression, $.subscripted_type],
     [$.atom_expression, $.imported_type],
-    [$.assignment_target_list, $.expression],
     [$.assignment_target_list, $._expression_without_conditional],
     [$.log_statement, $.atom_expression],
     [$.parenthesized_expression, $.tuple],
     [$.parenthesized_expression, $.multiline_tuple],
-    [$.parenthesized_expression, $.tuple_type],
-    [$.parenthesized_expression, $.multiline_tuple, $.tuple_type],
-    [$.tuple, $.multiline_tuple],
     [$.docstring, $.triple_quoted_string],
-    [$.atom, $.adjacent_string],
     [$.atom, $.continued_adjacent_string],
     [$.parameter_list],
     [$.module_binding_list],
     [$.argument_list],
-    [$.argument, $.argument_list],
-    [$.argument_list, $.call],
-    [$.import_list],
     [$.wrapped_binary_expression],
     [$.binary_expression, $.wrapped_binary_expression],
     [$.list],
     [$.expression, $.conditional_expression],
-    [$.conditional_expression, $.walrus_expression],
-    [$.call],
-    [$.call, $.parenthesized_expression, $.multiline_tuple],
     [$.if_statement],
   ],
 
@@ -763,91 +817,11 @@ module.exports = grammar({
     )),
 
     binary_expression: $ => choice(
-      ...[
-        ["or", PREC.or],
-        ["and", PREC.and],
-        ["in", PREC.compare],
-        ["==", PREC.compare],
-        ["!=", PREC.compare],
-        ["<", PREC.compare],
-        ["<=", PREC.compare],
-        [">", PREC.compare],
-        [">=", PREC.compare],
-        ["|", PREC.bitwise_or],
-        ["^", PREC.bitwise_xor],
-        ["&", PREC.bitwise_and],
-        ["<<", PREC.shift],
-        [">>", PREC.shift],
-        ["+", PREC.additive],
-        ["-", PREC.additive],
-        ["*", PREC.multiplicative],
-        ["//", PREC.multiplicative],
-        ["/", PREC.multiplicative],
-        ["%", PREC.multiplicative],
-      ].map(([operator, precedence]) =>
-        prec.left(precedence, seq(
-          field("left", $.expression),
-          field("operator", operator),
-          field("right", $.expression),
-        )),
-      ),
-      prec.right(PREC.power, seq(
-        field("left", $.expression),
-        field("operator", "**"),
-        field("right", $.expression),
-      )),
-      prec.left(PREC.compare, seq(
-        field("left", $.expression),
-        field("operator", seq("not", "in")),
-        field("right", $.expression),
-      )),
+      ...binaryExpressionRules($, $.expression),
     ),
 
     wrapped_binary_expression: $ => choice(
-      ...[
-        ["or", PREC.or],
-        ["and", PREC.and],
-        ["in", PREC.compare],
-        ["==", PREC.compare],
-        ["!=", PREC.compare],
-        ["<", PREC.compare],
-        ["<=", PREC.compare],
-        [">", PREC.compare],
-        [">=", PREC.compare],
-        ["|", PREC.bitwise_or],
-        ["^", PREC.bitwise_xor],
-        ["&", PREC.bitwise_and],
-        ["<<", PREC.shift],
-        [">>", PREC.shift],
-        ["+", PREC.additive],
-        ["-", PREC.additive],
-        ["*", PREC.multiplicative],
-        ["//", PREC.multiplicative],
-        ["/", PREC.multiplicative],
-        ["%", PREC.multiplicative],
-      ].map(([operator, precedence]) =>
-        prec.left(precedence, seq(
-          field("left", choice($.wrapped_binary_expression, $.expression)),
-          repeat($._soft_line_break),
-          field("operator", operator),
-          repeat($._soft_line_break),
-          field("right", choice($.wrapped_binary_expression, $.expression)),
-        )),
-      ),
-      prec.right(PREC.power, seq(
-        field("left", choice($.wrapped_binary_expression, $.expression)),
-        repeat($._soft_line_break),
-        field("operator", "**"),
-        repeat($._soft_line_break),
-        field("right", choice($.wrapped_binary_expression, $.expression)),
-      )),
-      prec.left(PREC.compare, seq(
-        field("left", choice($.wrapped_binary_expression, $.expression)),
-        repeat($._soft_line_break),
-        field("operator", seq("not", "in")),
-        repeat($._soft_line_break),
-        field("right", choice($.wrapped_binary_expression, $.expression)),
-      )),
+      ...binaryExpressionRules($, choice($.wrapped_binary_expression, $.expression), true),
     ),
 
     call: $ => prec(PREC.call, seq(
@@ -1084,19 +1058,7 @@ module.exports = grammar({
       ),
       repeat1(seq(
         "[",
-        choice(
-          seq(
-            commaSep1(choice($.type, $.expression)),
-            optional(","),
-          ),
-          seq(
-            repeat1($._soft_line_break),
-            choice($.type, $.expression),
-            repeat(seq(optional($._soft_line_break), ",", repeat($._soft_line_break), choice($.type, $.expression))),
-            optional(seq(optional($._soft_line_break), ",")),
-            softBreakTail($),
-          ),
-        ),
+        typeOrExpressionList($),
         "]",
       )),
     )),
@@ -1196,19 +1158,7 @@ module.exports = grammar({
     subscripted_type: $ => prec(1, seq(
       $.identifier,
       "[",
-      choice(
-        seq(
-          commaSep1(choice($.type, $.expression)),
-          optional(","),
-        ),
-        seq(
-          repeat1($._soft_line_break),
-          choice($.type, $.expression),
-          repeat(seq(optional($._soft_line_break), ",", repeat($._soft_line_break), choice($.type, $.expression))),
-          optional(seq(optional($._soft_line_break), ",")),
-          softBreakTail($),
-        ),
-      ),
+      typeOrExpressionList($),
       "]",
     )),
 

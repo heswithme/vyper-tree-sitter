@@ -9482,15 +9482,7 @@
     ],
     [
       "atom_expression",
-      "subscripted_type"
-    ],
-    [
-      "atom_expression",
       "imported_type"
-    ],
-    [
-      "assignment_target_list",
-      "expression"
     ],
     [
       "assignment_target_list",
@@ -9509,25 +9501,8 @@
       "multiline_tuple"
     ],
     [
-      "parenthesized_expression",
-      "tuple_type"
-    ],
-    [
-      "parenthesized_expression",
-      "multiline_tuple",
-      "tuple_type"
-    ],
-    [
-      "tuple",
-      "multiline_tuple"
-    ],
-    [
       "docstring",
       "triple_quoted_string"
-    ],
-    [
-      "atom",
-      "adjacent_string"
     ],
     [
       "atom",
@@ -9543,17 +9518,6 @@
       "argument_list"
     ],
     [
-      "argument",
-      "argument_list"
-    ],
-    [
-      "argument_list",
-      "call"
-    ],
-    [
-      "import_list"
-    ],
-    [
       "wrapped_binary_expression"
     ],
     [
@@ -9566,18 +9530,6 @@
     [
       "expression",
       "conditional_expression"
-    ],
-    [
-      "conditional_expression",
-      "walrus_expression"
-    ],
-    [
-      "call"
-    ],
-    [
-      "call",
-      "parenthesized_expression",
-      "multiline_tuple"
     ],
     [
       "if_statement"
