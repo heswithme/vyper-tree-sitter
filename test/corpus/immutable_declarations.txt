@@ -1,0 +1,27 @@
+=========================
+Simple immutable declaration
+=========================
+
+A: immutable(uint256)
+
+---
+
+(source_file
+  (immutable_declaration
+    (identifier)
+    (immutable_type
+        (identifier))))
+
+=========================
+Nested immutable declaration
+=========================
+
+A: public(immutable(uint256))
+
+---
+
+(source_file
+  (immutable_declaration
+    (identifier)
+    (immutable_type
+        (identifier))))
