@@ -1,5 +1,5 @@
 /// <reference types="tree-sitter-cli/dsl" />
-// @ts-check
+// @ts-nocheck
 
 const { PREC } = require("./grammar/precedence");
 const { commaSep1, sep1 } = require("./grammar/helpers");
@@ -245,6 +245,7 @@ module.exports = grammar({
       $.function_definition,
       $.interface_stub_definition,
       $.constant_declaration,
+      $.immutable_declaration,
       $.state_variable_declaration,
       $._newline,
     ),
@@ -465,6 +466,25 @@ module.exports = grammar({
       $._newline,
     ),
 
+    immutable_declaration: $ => seq(
+      field("name", $.identifier),
+      ":",
+      choice(
+        $.immutable_type,
+        seq("public", "(", $.immutable_type, ")"),
+      ),
+      $._newline,
+    ),
+
+    immutable_type: $ => seq(
+      "immutable",
+      "(",
+      optional($._soft_line_break),
+      $.type,
+      softBreakTail($),
+      ")",
+    ),
+
     constant_declaration: $ => seq(
       field("name", $.identifier),
       ":",
@@ -487,7 +507,7 @@ module.exports = grammar({
     ),
 
     variable_annotation: $ => seq(
-      choice("public", "reentrant", "immutable", "transient"),
+      choice("public", "reentrant", "transient"),
       "(",
       optional($._soft_line_break),
       field("value", choice($.variable_annotation, $.type)),

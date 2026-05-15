@@ -1439,6 +1439,47 @@
     }
   },
   {
+    "type": "immutable_declaration",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "immutable_type",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "immutable_type",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "type",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "implements_statement",
     "named": true,
     "fields": {
@@ -2043,6 +2084,10 @@
         },
         {
           "type": "function_definition",
+          "named": true
+        },
+        {
+          "type": "immutable_declaration",
           "named": true
         },
         {
